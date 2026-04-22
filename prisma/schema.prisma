@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  COORDINATOR
+  ADVISOR
+}
+
+enum Market {
+  CDMX
+  RIVIERA_MAYA
+}
+
+enum LeadStatus {
+  ACTIVE
+  WON
+  LOST
+  REACTIVATED
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  DONE
+  OVERDUE
+}
+
+enum AppointmentType {
+  CALL
+  MEETING
+  VISIT
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELED
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  role         UserRole      @default(ADVISOR)
+  market       Market
+  active       Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  leads        Lead[]
+  tasks        Task[]
+  appointments Appointment[]
+  notes        Note[]
+  activityLogs ActivityLog[]
+}
+
+model Lead {
+  id               String         @id @default(cuid())
+  fullName         String
+  email            String?
+  phone            String?
+  source           String
+  market           Market
+  zone             String
+  budgetMin        Int?
+  budgetMax        Int?
+  stage            String
+  status           LeadStatus     @default(ACTIVE)
+  profile          String?
+  nextAction       String
+  nextActionAt     DateTime?
+  assignedToId     String
+  assignedTo       User           @relation(fields: [assignedToId], references: [id])
+  propertyInterest String?
+  notes            Note[]
+  tasks            Task[]
+  appointments     Appointment[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Property {
+  id            String          @id @default(cuid())
+  title         String
+  market        Market
+  zone          String
+  propertyType  String
+  operationType String
+  price         Int
+  currency      String          @default("MXN")
+  bedrooms      Int?
+  bathrooms     Int?
+  areaM2        Int?
+  status        String
+  summary       String?
+  imageUrl      String?
+  featured      Boolean         @default(false)
+  published     Boolean         @default(false)
+  description   String?
+  images        PropertyImage[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model PropertyImage {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url        String
+  alt        String?
+  sortOrder  Int      @default(0)
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([propertyId, sortOrder])
+}
+
+model WebsiteInquiry {
+  id               String   @id @default(cuid())
+  fullName         String
+  email            String?
+  phone            String?
+  market           Market?
+  interest         String?
+  message          String?
+  source           String   @default("website")
+  preferredContact String?
+  createdAt        DateTime @default(now())
+}
+
+model Task {
+  id               String     @id @default(cuid())
+  title            String
+  description      String?
+  status           TaskStatus @default(PENDING)
+  dueAt            DateTime
+  leadId           String?
+  lead             Lead?      @relation(fields: [leadId], references: [id])
+  assigneeId       String
+  assignee         User       @relation(fields: [assigneeId], references: [id])
+  automationSource String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
+
+model Appointment {
+  id          String            @id @default(cuid())
+  title       String
+  type        AppointmentType
+  status      AppointmentStatus @default(SCHEDULED)
+  scheduledAt DateTime
+  location    String?
+  result      String?
+  leadId      String?
+  lead        Lead?             @relation(fields: [leadId], references: [id])
+  advisorId   String
+  advisor     User              @relation(fields: [advisorId], references: [id])
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  body      String
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id])
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  action      String
+  entityType  String
+  entityId    String
+  entityLabel String?
+  details     String?
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId, createdAt])
+  @@index([createdAt])
+}

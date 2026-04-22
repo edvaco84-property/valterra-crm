@@ -1,0 +1,186 @@
+import type { Appointment, DashboardStats, Lead, Property, Task } from "@/lib/types";
+
+export const dashboardStats: DashboardStats = {
+  activeLeads: 48,
+  todayTasks: 17,
+  scheduledVisits: 6,
+  monthlyClosings: 3,
+  responseTime: "11 min",
+  activePipelineValue: "$148.6M",
+};
+
+export const leads: Lead[] = [
+  {
+    id: "L-1024",
+    fullName: "Mariana Torres",
+    source: "Meta Ads",
+    market: "RIVIERA_MAYA",
+    zone: "Aldea Zamá",
+    stage: "Propiedad enviada",
+    status: "ACTIVE",
+    nextAction: "Enviar comparativo de 3 unidades",
+    nextActionAt: "2026-04-19T14:30:00-06:00",
+    assignedTo: "Andrea Ruiz",
+    phone: "+52 998 555 0101",
+    email: "mariana@correo.mx",
+    budgetRange: "$7M - $9M",
+    propertyInterest: "Condo 2 recámaras",
+  },
+  {
+    id: "L-1025",
+    fullName: "Carlos Elizondo",
+    source: "WhatsApp inbound",
+    market: "CDMX",
+    zone: "Polanco",
+    stage: "Cita agendada",
+    status: "ACTIVE",
+    nextAction: "Confirmar visita con brochure premium",
+    nextActionAt: "2026-04-19T12:00:00-06:00",
+    assignedTo: "Sofía Campos",
+    phone: "+52 55 5555 2211",
+    budgetRange: "$18M - $25M",
+    propertyInterest: "Penthouse",
+  },
+  {
+    id: "L-1026",
+    fullName: "Luisa Fernández",
+    source: "Broker referral",
+    market: "RIVIERA_MAYA",
+    zone: "Puerto Aventuras",
+    stage: "Perfilado",
+    status: "REACTIVATED",
+    nextAction: "Llamada de reconexión",
+    nextActionAt: "2026-04-20T09:15:00-06:00",
+    assignedTo: "Andrea Ruiz",
+    email: "luisa@capital.mx",
+    budgetRange: "$12M - $15M",
+    propertyInterest: "Villa frente al mar",
+  },
+];
+
+export const properties: Property[] = [
+  {
+    id: "P-201",
+    title: "Casa Horizonte",
+    market: "CDMX",
+    zone: "Lomas de Chapultepec",
+    propertyType: "Casa",
+    operationType: "Venta",
+    price: 42500000,
+    currency: "MXN",
+    status: "Disponible",
+    featured: true,
+    areaM2: 640,
+    bedrooms: 4,
+    bathrooms: 5,
+  },
+  {
+    id: "P-202",
+    title: "Solea Beach Residences 3B",
+    market: "RIVIERA_MAYA",
+    zone: "Tulum Centro",
+    propertyType: "Condominio",
+    operationType: "Venta",
+    price: 8350000,
+    currency: "MXN",
+    status: "Disponible",
+    areaM2: 143,
+    bedrooms: 2,
+    bathrooms: 2,
+  },
+  {
+    id: "P-203",
+    title: "Villa Ceiba Private Estate",
+    market: "RIVIERA_MAYA",
+    zone: "Tankah",
+    propertyType: "Villa",
+    operationType: "Venta",
+    price: 28600000,
+    currency: "MXN",
+    status: "Negociación",
+    featured: true,
+    areaM2: 510,
+    bedrooms: 5,
+    bathrooms: 6,
+  },
+];
+
+export const tasks: Task[] = [
+  {
+    id: "T-01",
+    title: "Enviar follow-up post visita",
+    dueAt: "2026-04-19T13:00:00-06:00",
+    status: "PENDING",
+    assignee: "Sofía Campos",
+    lead: "Carlos Elizondo",
+  },
+  {
+    id: "T-02",
+    title: "Actualizar disponibilidad de Solea 3B",
+    dueAt: "2026-04-19T15:00:00-06:00",
+    status: "IN_PROGRESS",
+    assignee: "Coordinación comercial",
+  },
+  {
+    id: "T-03",
+    title: "Recuperar lead frío de Puerto Aventuras",
+    dueAt: "2026-04-19T10:00:00-06:00",
+    status: "OVERDUE",
+    assignee: "Andrea Ruiz",
+    lead: "Luisa Fernández",
+  },
+];
+
+export const appointments: Appointment[] = [
+  {
+    id: "A-01",
+    title: "Visita Casa Horizonte",
+    type: "VISIT",
+    status: "SCHEDULED",
+    scheduledAt: "2026-04-19T16:30:00-06:00",
+    advisor: "Sofía Campos",
+    location: "Lomas de Chapultepec",
+    lead: "Carlos Elizondo",
+  },
+  {
+    id: "A-02",
+    title: "Call de perfilamiento",
+    type: "CALL",
+    status: "SCHEDULED",
+    scheduledAt: "2026-04-19T12:30:00-06:00",
+    advisor: "Andrea Ruiz",
+    lead: "Mariana Torres",
+  },
+  {
+    id: "A-03",
+    title: "Revisión de pipeline semanal",
+    type: "MEETING",
+    status: "COMPLETED",
+    scheduledAt: "2026-04-19T09:00:00-06:00",
+    advisor: "Dirección comercial",
+    location: "Sala Valterra",
+  },
+];
+
+export const pipelineColumns = [
+  {
+    name: "Nuevos",
+    items: ["Mariana Torres", "Emilio Casares"],
+  },
+  {
+    name: "Perfilado",
+    items: ["Luisa Fernández", "Marcela Aponte"],
+  },
+  {
+    name: "Propiedad enviada",
+    items: ["Carlos Elizondo", "Paola Jaramillo", "Jorge Neri"],
+  },
+  {
+    name: "Cita agendada",
+    items: ["Mariana del Valle"],
+  },
+  {
+    name: "Negociación",
+    items: ["Familia Cárdenas"],
+  },
+];

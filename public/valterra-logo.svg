@@ -1,0 +1,25 @@
+<svg width="1400" height="1200" viewBox="0 0 1400 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="1200" fill="transparent"/>
+  <defs>
+    <linearGradient id="gold" x1="320" y1="180" x2="1080" y2="980" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3E8D3"/>
+      <stop offset="0.32" stop-color="#E8D8BD"/>
+      <stop offset="0.68" stop-color="#D7C09A"/>
+      <stop offset="1" stop-color="#C8AA78"/>
+    </linearGradient>
+  </defs>
+  <g fill="url(#gold)">
+    <path d="M700 134L658 166V492H742V102L700 134Z"/>
+    <path d="M615 226L576 259V492H633V194L615 226Z"/>
+    <path d="M785 226L767 194V492H824V259L785 226Z"/>
+    <path d="M390 358C445 352 501 356 563 356C532 370 516 394 492 444L406 624L516 582L686 838L806 650L576 644L390 358Z"/>
+    <path d="M1010 358C955 352 899 356 837 356C868 370 884 394 908 444L994 624L884 582L714 838L594 650L824 644L1010 358Z"/>
+    <path d="M565 512C708 500 867 514 975 554C870 562 804 570 714 568C648 566 610 564 565 512Z"/>
+    <path d="M435 598L505 572L489 616L435 598Z"/>
+    <path d="M965 598L895 572L911 616L965 598Z"/>
+  </g>
+  <text x="700" y="1030" text-anchor="middle" fill="url(#gold)" font-size="190" font-family="Georgia, 'Times New Roman', serif" letter-spacing="3">VALTERRA</text>
+  <line x1="172" y1="1092" x2="300" y2="1092" stroke="url(#gold)" stroke-width="6"/>
+  <line x1="1100" y1="1092" x2="1228" y2="1092" stroke="url(#gold)" stroke-width="6"/>
+  <text x="700" y="1112" text-anchor="middle" fill="url(#gold)" font-size="58" font-family="Arial, Helvetica, sans-serif" letter-spacing="7">PATRIMONIO CON VISIÓN</text>
+</svg>
