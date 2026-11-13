@@ -10,21 +10,21 @@ import { getPublishedProperties } from "@/lib/properties/queries";
 export const metadata: Metadata = {
   title: "Valterra | Propiedades e inversión inmobiliaria con oportunidades en Tulum",
   description:
-    "Valterra conecta compra, inversión y comercialización inmobiliaria en CDMX, Estado de Mexico y Riviera Maya, con catálogo público, rutas de contacto y acceso directo a Yaax Tulum Condos.",
+    "Valterra conecta compra, inversión y comercialización inmobiliaria en CDMX, Estado de Mexico y Riviera Maya, con catálogo público y acompañamiento comercial personalizado.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Valterra | Propiedades e inversión inmobiliaria con oportunidades en Tulum",
     description:
-      "Explora propiedades publicadas, conoce la ruta comercial de Valterra y entra al clúster de Yaax Tulum Condos para búsquedas de preventa en Tulum.",
+      "Explora propiedades publicadas y conoce la ruta comercial de Valterra para comprar, invertir o comercializar un activo inmobiliario.",
     url: "/",
   },
   twitter: {
     card: "summary_large_image",
     title: "Valterra | Propiedades e inversión inmobiliaria con oportunidades en Tulum",
     description:
-      "Catálogo público, acompañamiento comercial y rutas claras hacia Yaax Tulum Condos para compra e inversión en Tulum.",
+      "Catálogo público y acompañamiento comercial para compra e inversión inmobiliaria.",
   },
 };
 
@@ -119,51 +119,6 @@ const trustSignals = [
   "Seguimiento comercial personalizado",
 ];
 
-const yaaxIntentCards = [
-  {
-    eyebrow: "Preventa",
-    title: "Departamentos en preventa en Tulum",
-    copy: "La landing principal de Yaax ya resume tipologías, precio de entrada y contacto comercial directo sin mandar al lead a una galería muda.",
-    href: "/desarrollos/yaax-tulum-condos",
-    cta: "Ver preventa Yaax",
-  },
-  {
-    eyebrow: "Región 11",
-    title: "Propiedades en Región 11 Tulum",
-    copy: "Ruta específica para quien ya busca ubicación y quiere filtrar inventario con contexto de zona, ticket y perfil patrimonial.",
-    href: "/desarrollos/yaax-tulum-condos/region-11-tulum",
-    cta: "Explorar Región 11",
-  },
-  {
-    eyebrow: "2 recámaras",
-    title: "Departamentos de 2 recámaras en Tulum",
-    copy: "Una página enfocada en compradores que necesitan más metraje útil, mejor distribución y un lead menos ambiguo desde la primera visita.",
-    href: "/desarrollos/yaax-tulum-condos/departamentos-2-recamaras-en-tulum",
-    cta: "Ver 2 recámaras",
-  },
-  {
-    eyebrow: "3 rec lock-off",
-    title: "Departamentos de 3 recámaras lock-off en Tulum",
-    copy: "Ruta para compradores de ticket más alto que ya comparan amplitud, distribución flexible y una conversación comercial más concreta.",
-    href: "/desarrollos/yaax-tulum-condos/departamentos-3-recamaras-lock-off-en-tulum",
-    cta: "Ver 3 rec lock-off",
-  },
-  {
-    eyebrow: "Studios",
-    title: "Studios en Tulum",
-    copy: "Entrada más ligera para inversión o segunda residencia con una ruta interna clara hacia disponibilidad publicada y contacto comercial.",
-    href: "/desarrollos/yaax-tulum-condos/studios-en-tulum",
-    cta: "Ver studios",
-  },
-  {
-    eyebrow: "Penthouses",
-    title: "Penthouses en Tulum",
-    copy: "Ruta premium para leads que ya buscan más metraje, compra patrimonial y una conversación comercial menos genérica desde la primera visita.",
-    href: "/desarrollos/yaax-tulum-condos/penthouses-en-tulum",
-    cta: "Ver penthouses",
-  },
-];
-
 const publicNavItems = [
   { href: "#inicio", label: "Inicio" },
   { href: "#oportunidades", label: "Oportunidades" },
@@ -184,7 +139,7 @@ export default async function LandingPage() {
         "@type": "WebPage",
         name: "Valterra",
         description:
-          "Sitio público de Valterra para propiedades, inversión inmobiliaria y rutas de contacto con foco en CDMX, Estado de Mexico, Riviera Maya y Yaax Tulum Condos.",
+          "Sitio público de Valterra para propiedades, inversión inmobiliaria y rutas de contacto con foco en CDMX, Estado de Mexico y Riviera Maya.",
         url: homeUrl,
       },
       {
@@ -199,16 +154,6 @@ export default async function LandingPage() {
           "departamentos en Tulum",
           "propiedades en Región 11 Tulum",
         ],
-      },
-      {
-        "@type": "ItemList",
-        name: "Rutas Yaax Tulum Condos",
-        itemListElement: yaaxIntentCards.map((card, index) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          name: card.title,
-          url: new URL(card.href, siteUrl).toString(),
-        })),
       },
     ],
   };
@@ -266,64 +211,6 @@ export default async function LandingPage() {
                 <span>Seguimiento comercial real</span>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section className="border-b border-[#6b5841]/45 bg-[#171310] px-6 py-8 sm:px-10">
-          <div className="grid gap-5 rounded-[2rem] border border-[#5f503d]/45 bg-[linear-gradient(135deg,#211913_0%,#171310_62%,#302217_100%)] p-6 sm:p-8 lg:grid-cols-[1.1fr_0.9fr]">
-            <div>
-              <p className="text-xs uppercase tracking-[0.24em] text-[#c5a57c]">Desarrollo destacado</p>
-              <h2 className="mt-3 font-serif text-4xl text-[#f4e7d7]">Yaax Tulum Condos ya tiene landing comercial nueva.</h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-[#dccdb8]/82">
-                Rehicimos la narrativa para venta real: tipologías, precio de entrada, CTAs directos y captura de lead con contexto. Mucho mejor que mandar tráfico a una postal bonita con ansiedad.
-              </p>
-            </div>
-            <div className="flex flex-col justify-center gap-3 lg:items-end">
-              <Link
-                href="/desarrollos/yaax-tulum-condos"
-                className="inline-flex min-h-12 items-center justify-center bg-[#d3b184] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#1d1712] transition hover:bg-[#e0bf95]"
-              >
-                Ver landing de Yaax
-              </Link>
-              <Link
-                href="/propiedades?mercado=RIVIERA_MAYA"
-                className="inline-flex min-h-12 items-center justify-center border border-[#8b7354] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5"
-              >
-                Ver inventario Riviera Maya
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-b border-[#6b5841]/45 bg-[#120f0d] px-6 py-10 sm:px-10">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.24em] text-[#c5a57c]">Compra e inversión en Tulum</p>
-              <h2 className="mt-3 font-serif text-4xl text-[#f4e7d7]">Rutas de búsqueda que ya están listas para captar intención real.</h2>
-              <p className="mt-4 max-w-3xl text-sm leading-7 text-[#dccdb8]/82">
-                En lugar de concentrar todo en una sola página, Valterra ya enlaza accesos más precisos para preventa, Región 11 y tipologías clave dentro de Yaax Tulum Condos.
-              </p>
-            </div>
-            <div>
-              <Link href="/desarrollos/yaax-tulum-condos" className="inline-flex min-h-12 items-center justify-center border border-[#8b7354] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5">
-                Ver clúster Yaax completo
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-4 lg:grid-cols-4">
-            {yaaxIntentCards.map((item) => (
-              <div key={item.title} className="rounded-[1.5rem] border border-[#5f503d]/45 bg-[#1b1612] p-6">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-[#c5a57c]">{item.eyebrow}</p>
-                <h3 className="mt-3 font-serif text-2xl text-[#f4e7d7]">{item.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-[#dccdb8]/82">{item.copy}</p>
-                <div className="mt-6">
-                  <Link href={item.href} className="inline-flex items-center justify-center border border-[#8b7354] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5">
-                    {item.cta}
-                  </Link>
-                </div>
-              </div>
-            ))}
           </div>
         </section>
 

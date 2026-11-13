@@ -11,16 +11,6 @@ const staticRoutes: Array<{
   { path: "/", changeFrequency: "weekly", priority: 1 },
   { path: "/propiedades", changeFrequency: "daily", priority: 0.9 },
   { path: "/brokers", changeFrequency: "weekly", priority: 0.65 },
-  { path: "/desarrollos/yaax-tulum-condos", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/desarrollos/yaax-tulum-condos/comprar-propiedad-en-tulum", changeFrequency: "weekly", priority: 0.85 },
-  { path: "/desarrollos/yaax-tulum-condos/fase-1-edificio-4", changeFrequency: "weekly", priority: 0.85 },
-  { path: "/desarrollos/yaax-tulum-condos/studios-en-tulum", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/desarrollos/yaax-tulum-condos/departamentos-2-recamaras-en-tulum", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/desarrollos/yaax-tulum-condos/departamentos-3-recamaras-lock-off-en-tulum", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/desarrollos/yaax-tulum-condos/penthouses-en-tulum", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/desarrollos/yaax-tulum-condos/region-11-tulum", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/desarrollos/yaax-tulum-condos/precios-region-11-vs-aldea-zama-y-la-veleta", changeFrequency: "weekly", priority: 0.75 },
-  { path: "/desarrollos/yaax-tulum-condos/plan-de-pago-preventa-tulum", changeFrequency: "weekly", priority: 0.8 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
