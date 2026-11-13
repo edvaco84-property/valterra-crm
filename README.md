@@ -39,19 +39,35 @@ DATABASE_URL=
 NEXTAUTH_SECRET=
 NEXTAUTH_URL=
 APP_URL=
+SESSION_SECRET=
+META_ACCESS_TOKEN=
+META_FACEBOOK_PAGE_ID=
+META_INSTAGRAM_BUSINESS_ACCOUNT_ID=
+META_GRAPH_API_VERSION=
 ```
 
 ## Deploy recomendado
-### Opción rápida: Vercel + Postgres gestionado
-1. Sube este repo a GitHub
-2. Importa el proyecto en Vercel
-3. Configura variables de entorno de producción
-4. Provisiona Postgres (Neon, Supabase, Railway o Vercel Postgres)
-5. Ejecuta en build o post-deploy:
-   - `npm run db:generate`
-   - `npm run db:push`
-   - `npm run db:seed` (solo si quieres datos demo)
+### Producción recomendada: Fly.io + Neon
+1. Crea una base Postgres en Neon y copia `DATABASE_URL`
+2. Configura secretos en Fly:
+   - `DATABASE_URL`
+   - `NEXTAUTH_SECRET`
+   - `SESSION_SECRET`
+   - `NEXTAUTH_URL`
+   - `APP_URL`
+   - `META_ACCESS_TOKEN`
+   - `META_FACEBOOK_PAGE_ID`
+   - `META_INSTAGRAM_BUSINESS_ACCOUNT_ID`
+   - `META_GRAPH_API_VERSION` opcional, default `v23.0`
+3. Despliega con `fly deploy`
+4. Fly ejecutará `npx prisma migrate deploy` en release usando las migraciones versionadas del proyecto
+5. Si quieres datos iniciales, corre el seed manualmente una sola vez:
+   - `fly ssh console -C "cd /app && npm run db:seed"`
 6. Conecta tu dominio (`valterra.mx` o `www.valterra.mx`)
+
+### Notas importantes
+- No uses `db:push` en producción; usa migraciones (`prisma migrate deploy`)
+- Si apuntas a una base existente sin historial de migraciones, primero hay que baselinarla con `prisma migrate resolve`
 
 ## Checklist de salida a producción
 - [ ] `DATABASE_URL` de producción activa
@@ -61,6 +77,9 @@ APP_URL=
 - [ ] Revisar copy final de contacto y CTA
 - [ ] Crear primera propiedad publicada desde CRM
 - [ ] Verificar que los formularios estén guardando en DB
+- [ ] Conectar Meta Business: página de Facebook + cuenta de Instagram Business
+- [ ] Cargar `META_ACCESS_TOKEN`, `META_FACEBOOK_PAGE_ID` y `META_INSTAGRAM_BUSINESS_ACCOUNT_ID`
+- [ ] Probar una publicación manual desde `/properties/[id]/edit`
 
 ## Scripts útiles
 ```bash
