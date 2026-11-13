@@ -1,0 +1,5 @@
+ALTER TABLE "Property"
+ADD COLUMN "locationLabel" TEXT,
+ADD COLUMN "googleMapsUrl" TEXT,
+ADD COLUMN "latitude" DOUBLE PRECISION,
+ADD COLUMN "longitude" DOUBLE PRECISION;

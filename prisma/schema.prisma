@@ -15,6 +15,7 @@ enum UserRole {
 
 enum Market {
   CDMX
+  ESTADO_DE_MEXICO
   RIVIERA_MAYA
 }
 
@@ -44,10 +45,26 @@ enum AppointmentStatus {
   CANCELED
 }
 
+enum PublicationChannel {
+  WEBSITE
+  INMUEBLES24
+  FACEBOOK
+  INSTAGRAM
+}
+
+enum PublicationStatus {
+  DRAFT
+  READY
+  PUBLISHED
+  PAUSED
+  ERROR
+}
+
 model User {
   id           String        @id @default(cuid())
   name         String
   email        String        @unique
+  phone        String?
   passwordHash String
   role         UserRole      @default(ADVISOR)
   market       Market
@@ -78,6 +95,10 @@ model Lead {
   nextActionAt     DateTime?
   assignedToId     String
   assignedTo       User           @relation(fields: [assignedToId], references: [id])
+  developmentId    String?
+  development      Development?   @relation(fields: [developmentId], references: [id])
+  propertyId       String?
+  property         Property?      @relation("LeadInterestedProperty", fields: [propertyId], references: [id])
   propertyInterest String?
   notes            Note[]
   tasks            Task[]
@@ -86,11 +107,35 @@ model Lead {
   updatedAt        DateTime       @updatedAt
 }
 
+model Development {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  market      Market
+  zone        String
+  status      String
+  summary     String?
+  description String?
+  properties  Property[]
+  leads       Lead[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
 model Property {
   id            String          @id @default(cuid())
   title         String
   market        Market
   zone          String
+  locationLabel String?
+  googleMapsUrl String?
+  latitude      Float?
+  longitude     Float?
+  developmentId String?
+  development   Development?    @relation(fields: [developmentId], references: [id])
+  unitCode      String?
+  unitType      String?
+  floorLabel    String?
   propertyType  String
   operationType String
   price         Int
@@ -104,9 +149,29 @@ model Property {
   featured      Boolean         @default(false)
   published     Boolean         @default(false)
   description   String?
+  interestedLeads Lead[]        @relation("LeadInterestedProperty")
   images        PropertyImage[]
+  publications  PropertyPublication[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+}
+
+model PropertyPublication {
+  id          String            @id @default(cuid())
+  propertyId  String
+  property    Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  channel     PublicationChannel
+  isEnabled   Boolean           @default(false)
+  status      PublicationStatus @default(DRAFT)
+  externalId  String?
+  externalUrl String?
+  syncNotes   String?
+  lastSyncedAt DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@unique([propertyId, channel])
+  @@index([channel, isEnabled, status])
 }
 
 model PropertyImage {
@@ -115,6 +180,10 @@ model PropertyImage {
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   url        String
   alt        String?
+  filename   String?
+  mimeType   String?
+  sizeBytes  Int?
+  content    Bytes?
   sortOrder  Int      @default(0)
   isPrimary  Boolean  @default(false)
   createdAt  DateTime @default(now())
@@ -132,6 +201,7 @@ model WebsiteInquiry {
   message          String?
   source           String   @default("website")
   preferredContact String?
+  seenAt           DateTime?
   createdAt        DateTime @default(now())
 }
 
