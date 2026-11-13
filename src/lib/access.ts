@@ -1,9 +1,10 @@
 import type { UserRole } from "@prisma/client";
+import type { AppMarket } from "@/lib/markets";
 
 export type SessionActor = {
   id: string;
   role: UserRole;
-  market: "CDMX" | "RIVIERA_MAYA";
+  market: AppMarket;
 };
 
 export function canViewAllRecords(role: UserRole) {

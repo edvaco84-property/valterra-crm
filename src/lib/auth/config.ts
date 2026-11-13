@@ -1,10 +1,2 @@
-export const demoSession = {
-  user: {
-    name: "Edgar V",
-    email: "boss@valterra.mx",
-    role: "ADMIN",
-  },
-};
-
 export const authNotice =
-  "Auth real todavía no está conectada. Por ahora dejamos el shell listo para integrar NextAuth/Auth.js sin rehacer la app.";
+  "La sesión usa una cookie firmada del servidor. Configura SESSION_SECRET o NEXTAUTH_SECRET con un valor largo y aleatorio en producción.";

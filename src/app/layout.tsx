@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import type { Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,9 +14,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const metadataBase = process.env.APP_URL ? new URL(process.env.APP_URL) : new URL("http://localhost:3000");
+
 export const metadata: Metadata = {
-  title: "Valterra",
-  description: "Patrimonio con visión.",
+  metadataBase,
+  title: "Valterra | Propiedades e inversión inmobiliaria",
+  description: "Propiedades e inversión inmobiliaria en CDMX, Estado de Mexico y Riviera Maya con criterio comercial, selección curada y acompañamiento personalizado.",
+  icons: {
+    apple: "/apple-touch-icon.jpg",
+    icon: [
+      { url: "/icons/icon-192.jpg", sizes: "192x192", type: "image/jpeg" },
+      { url: "/icons/icon-512.jpg", sizes: "512x512", type: "image/jpeg" },
+    ],
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#171310",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

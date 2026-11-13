@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { loginAction } from "@/app/actions/auth";
+import { inputClassName, primaryButtonClassName } from "@/lib/utils";
 
 const initialState = { error: "" };
 
@@ -12,14 +13,14 @@ export function LoginForm() {
     <form action={formAction} className="space-y-4">
       <div className="space-y-2">
         <label className="text-sm font-medium text-zinc-700" htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-400" placeholder="boss@valterra.mx" />
+        <input id="email" name="email" type="email" className={inputClassName} placeholder="correo@valterra.mx" autoComplete="email" />
       </div>
       <div className="space-y-2">
         <label className="text-sm font-medium text-zinc-700" htmlFor="password">Contraseña</label>
-        <input id="password" name="password" type="password" className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-400" placeholder="••••••••" />
+        <input id="password" name="password" type="password" className={inputClassName} placeholder="••••••••" autoComplete="current-password" />
       </div>
       {state?.error ? <p className="text-sm text-rose-600">{state.error}</p> : null}
-      <button disabled={pending} className="w-full rounded-2xl bg-[#1a1817] px-4 py-3 font-medium text-white disabled:opacity-60">
+      <button disabled={pending} className={`${primaryButtonClassName} w-full`}>
         {pending ? "Entrando..." : "Entrar"}
       </button>
     </form>
