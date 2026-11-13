@@ -2,10 +2,11 @@ import { ReportsAdvisorsTable } from "@/components/reports/reports-advisors-tabl
 import { ReportsAutomation } from "@/components/reports/reports-automation";
 import { ReportsFilters } from "@/components/reports/reports-filters";
 import { ReportsFunnel } from "@/components/reports/reports-funnel";
+import { ReportsMarketing } from "@/components/reports/reports-marketing";
 import { ReportsSources } from "@/components/reports/reports-sources";
 import { ReportsSummary } from "@/components/reports/reports-summary";
 import { PageShell } from "@/components/shared/page-shell";
-import { getReportsSnapshot } from "@/lib/dashboard/queries";
+import { getMarketingSnapshot, getReportsSnapshot } from "@/lib/dashboard/queries";
 import { leadStageOptions } from "@/lib/leads/constants";
 import { getAdvisors, getLeadList } from "@/lib/leads/queries";
 import { permissions, requireRole } from "@/lib/permissions";
@@ -18,13 +19,14 @@ export default async function ReportsPage({
   const user = await requireRole(permissions.viewReports);
   const params = await searchParams;
   const days = [7, 30, 90].includes(Number(params.days)) ? Number(params.days) : 30;
-  const [snapshot, advisors, leads] = await Promise.all([
+  const [snapshot, marketingSnapshot, advisors, leads] = await Promise.all([
     getReportsSnapshot(days, {
       market: params.market,
       stage: params.stage,
       assignedToId: params.assignedToId,
       source: params.source,
     }),
+    getMarketingSnapshot(days),
     getAdvisors(user),
     getLeadList({ actor: user }),
   ]);
@@ -51,6 +53,7 @@ export default async function ReportsPage({
         <ReportsFunnel items={snapshot.funnel} />
         <ReportsSources items={snapshot.sourceBreakdown} />
       </section>
+      <ReportsMarketing snapshot={marketingSnapshot} />
       <ReportsAutomation snapshot={snapshot.automation} />
       <ReportsAdvisorsTable advisors={snapshot.advisors} days={days} />
     </PageShell>

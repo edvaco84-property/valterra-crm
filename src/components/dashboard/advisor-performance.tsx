@@ -1,10 +1,11 @@
 import { Card } from "@/components/ui/card";
+import { getMarketLabel, type AppMarket } from "@/lib/markets";
 
 type AdvisorPerformanceItem = {
   id: string;
   name: string;
   role: string;
-  market: "CDMX" | "RIVIERA_MAYA";
+  market: AppMarket;
   totalLeads: number;
   wonLeads: number;
   activeLeads: number;
@@ -29,7 +30,7 @@ export function AdvisorPerformance({ advisors }: { advisors: AdvisorPerformanceI
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h3 className="text-lg font-semibold text-zinc-950">{advisor.name}</h3>
-                <p className="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-500">{advisor.role} · {advisor.market === "RIVIERA_MAYA" ? "Riviera Maya" : "CDMX"}</p>
+                <p className="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-500">{advisor.role} · {getMarketLabel(advisor.market)}</p>
               </div>
               <div className="rounded-full bg-white px-3 py-1 text-xs font-medium text-zinc-600">
                 {advisor.totalLeads} leads totales

@@ -1,3 +1,5 @@
+import { marketOptions } from "@/lib/markets";
+
 type Option = { value: string; label: string };
 
 export function ReportsFilters({
@@ -33,8 +35,9 @@ export function ReportsFilters({
         <span>Mercado</span>
         <select name="market" defaultValue={market ?? ""} className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-zinc-900 outline-none focus:border-zinc-400">
           <option value="">Todos</option>
-          <option value="CDMX">CDMX</option>
-          <option value="RIVIERA_MAYA">Riviera Maya</option>
+          {marketOptions.map((option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
         </select>
       </label>
       <label className="space-y-2 text-sm text-zinc-700">

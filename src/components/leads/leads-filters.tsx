@@ -1,3 +1,7 @@
+import Link from "next/link";
+import { MobilePanel } from "@/components/mobile/mobile-panel";
+import { marketOptions } from "@/lib/markets";
+import { inputClassName, primaryButtonClassName, selectClassName, secondaryButtonClassName } from "@/lib/utils";
 import { getAdvisors } from "@/lib/leads/queries";
 
 export async function LeadsFilters({
@@ -14,30 +18,32 @@ export async function LeadsFilters({
   const advisors = await getAdvisors();
 
   return (
-    <form className="grid gap-3 rounded-3xl border border-zinc-200 bg-white p-4 shadow-sm md:grid-cols-2 xl:grid-cols-[1.3fr_0.8fr_0.8fr_1fr_auto] xl:items-end">
-      <label className="space-y-2 text-sm text-zinc-700">
+    <MobilePanel title="Filtros" description="Abre sólo los filtros cuando los necesites." buttonLabel="Filtros">
+      <form className="grid gap-3 rounded-[28px] border border-white/60 bg-white/82 p-4 shadow-[0_18px_60px_rgba(24,24,27,0.12)] backdrop-blur-xl md:grid-cols-2 xl:grid-cols-[1.3fr_0.8fr_0.8fr_1fr_auto] xl:items-end">
+        <label className="space-y-2 text-sm text-zinc-700">
         <span>Búsqueda</span>
         <input
           type="search"
           name="q"
           defaultValue={query}
           placeholder="Nombre, email, teléfono, fuente o zona"
-          className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-400"
+          className={inputClassName}
         />
       </label>
 
       <label className="space-y-2 text-sm text-zinc-700">
         <span>Mercado</span>
-        <select name="market" defaultValue={market ?? ""} className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-zinc-900 outline-none focus:border-zinc-400">
+        <select name="market" defaultValue={market ?? ""} className={selectClassName}>
           <option value="">Todos</option>
-          <option value="CDMX">CDMX</option>
-          <option value="RIVIERA_MAYA">Riviera Maya</option>
+          {marketOptions.map((option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
         </select>
       </label>
 
       <label className="space-y-2 text-sm text-zinc-700">
         <span>Estatus</span>
-        <select name="status" defaultValue={status ?? ""} className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-zinc-900 outline-none focus:border-zinc-400">
+        <select name="status" defaultValue={status ?? ""} className={selectClassName}>
           <option value="">Todos</option>
           <option value="ACTIVE">Activo</option>
           <option value="REACTIVATED">Reactivado</option>
@@ -48,7 +54,7 @@ export async function LeadsFilters({
 
       <label className="space-y-2 text-sm text-zinc-700">
         <span>Asesor</span>
-        <select name="assignedToId" defaultValue={assignedToId ?? ""} className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-zinc-900 outline-none focus:border-zinc-400">
+        <select name="assignedToId" defaultValue={assignedToId ?? ""} className={selectClassName}>
           <option value="">Todos</option>
           {advisors.map((advisor) => (
             <option key={advisor.id} value={advisor.id}>{advisor.name}</option>
@@ -56,12 +62,13 @@ export async function LeadsFilters({
         </select>
       </label>
 
-      <div className="flex gap-2">
-        <button className="rounded-2xl bg-[#1a1817] px-4 py-3 text-sm font-medium text-white">Filtrar</button>
-        <a href="/leads" className="rounded-2xl border border-zinc-300 px-4 py-3 text-sm font-medium text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-950">
-          Limpiar
-        </a>
-      </div>
-    </form>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <button className={`${primaryButtonClassName} text-sm`}>Filtrar</button>
+          <Link href="/leads" className={secondaryButtonClassName}>
+            Limpiar
+          </Link>
+        </div>
+      </form>
+    </MobilePanel>
   );
 }

@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import type { SessionActor } from "@/lib/access";
 import { buildAppointmentAccessWhere, buildLeadAccessWhere, buildTaskAccessWhere } from "@/lib/access";
+import type { AppMarket } from "@/lib/markets";
 import { leadStageOptions } from "@/lib/leads/constants";
 
 export async function getDashboardStats(actor?: SessionActor) {
@@ -286,7 +287,7 @@ export async function getReportsSnapshot(days = 30, filters?: { market?: string;
   from.setHours(0, 0, 0, 0);
 
   const leadFilters = {
-    ...(filters?.market ? { market: filters.market as "CDMX" | "RIVIERA_MAYA" } : {}),
+    ...(filters?.market ? { market: filters.market as AppMarket } : {}),
     ...(filters?.stage ? { stage: filters.stage } : {}),
     ...(filters?.assignedToId ? { assignedToId: filters.assignedToId } : {}),
     ...(filters?.source ? { source: filters.source } : {}),
@@ -367,7 +368,7 @@ export async function getReportsSnapshot(days = 30, filters?: { market?: string;
     }),
     db.lead.findMany({
       where: {
-        ...(filters?.market ? { market: filters.market as "CDMX" | "RIVIERA_MAYA" } : {}),
+        ...(filters?.market ? { market: filters.market as AppMarket } : {}),
         ...(filters?.assignedToId ? { assignedToId: filters.assignedToId } : {}),
         createdAt: { gte: from },
       },
@@ -438,6 +439,67 @@ export async function getReportsSnapshot(days = 30, filters?: { market?: string;
   };
 }
 
+export async function getMarketingSnapshot(days = 30) {
+  const from = new Date();
+  from.setDate(from.getDate() - Math.max(days - 1, 0));
+  from.setHours(0, 0, 0, 0);
+
+  const events = await db.activityLog.findMany({
+    where: {
+      entityType: "marketing_page",
+      entityId: "/desarrollos/yaax-tulum-condos/fase-1-edificio-4",
+      createdAt: { gte: from },
+      action: {
+        startsWith: "marketing:",
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      action: true,
+      entityLabel: true,
+      details: true,
+      createdAt: true,
+    },
+  });
+
+  const byEvent = new Map<string, number>();
+  const byLabel = new Map<string, number>();
+
+  for (const event of events) {
+    const eventName = event.action.replace(/^marketing:/, "");
+    byEvent.set(eventName, (byEvent.get(eventName) ?? 0) + 1);
+
+    if (event.entityLabel) {
+      byLabel.set(event.entityLabel, (byLabel.get(event.entityLabel) ?? 0) + 1);
+    }
+  }
+
+  return {
+    days,
+    totalEvents: events.length,
+    formStarts: byEvent.get("lead_form_start") ?? 0,
+    formSubmits: byEvent.get("lead_form_submit") ?? 0,
+    whatsappClicks:
+      (byEvent.get("yaax_phase1_whatsapp_click") ?? 0) +
+      (byEvent.get("yaax_phase1_inventory_whatsapp_click") ?? 0),
+    prefilledTipologyClicks: byEvent.get("yaax_phase1_tipology_prefill") ?? 0,
+    eventBreakdown: Array.from(byEvent.entries())
+      .map(([eventName, count]) => ({ eventName, count }))
+      .sort((a, b) => b.count - a.count),
+    labelBreakdown: Array.from(byLabel.entries())
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => b.count - a.count),
+    recentEvents: events.slice(0, 8).map((event) => ({
+      eventName: event.action.replace(/^marketing:/, ""),
+      label: event.entityLabel,
+      createdAt: event.createdAt,
+      details: parseMarketingDetails(event.details),
+    })),
+  };
+}
+
 function startOfMonth() {
   const date = new Date();
   return new Date(date.getFullYear(), date.getMonth(), 1);
@@ -449,4 +511,17 @@ function formatCurrency(value: number) {
     currency: "MXN",
     maximumFractionDigits: 0,
   }).format(value);
+}
+
+function parseMarketingDetails(details?: string | null) {
+  if (!details) return null;
+
+  try {
+    return JSON.parse(details) as {
+      href?: string | null;
+      metadata?: Record<string, string | number | boolean | null> | null;
+    };
+  } catch {
+    return null;
+  }
 }

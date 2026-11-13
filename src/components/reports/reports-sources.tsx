@@ -10,7 +10,7 @@ export function ReportsSources({ items }: { items: SourceItem[] }) {
     <Card>
       <div>
         <h2 className="text-lg font-semibold text-zinc-950">Fuentes de entrada</h2>
-        <p className="text-sm text-zinc-500">Qué canales están alimentando la operación comercial.</p>
+        <p className="text-sm text-zinc-500">Canales que están alimentando la operación comercial.</p>
       </div>
       <div className="mt-5 space-y-3">
         {items.length ? items.map((item) => (

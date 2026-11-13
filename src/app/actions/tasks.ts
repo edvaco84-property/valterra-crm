@@ -18,9 +18,9 @@ const taskSchema = z.object({
   assigneeId: z.string().min(1, "Selecciona responsable."),
 });
 
-const initialState = { error: "", success: "" };
+type TaskActionState = { error: string; success: string };
 
-export async function createTaskAction(_: typeof initialState, formData: FormData) {
+export async function createTaskAction(_: TaskActionState, formData: FormData) {
   const user = await requireSessionUser();
   if (!hasPermission(user.role, permissions.createTask)) {
     return { error: "No tienes permiso para crear tareas.", success: "" };
@@ -76,7 +76,7 @@ export async function createTaskAction(_: typeof initialState, formData: FormDat
   return { error: "", success: "Tarea creada." };
 }
 
-export async function updateTaskStatusAction(taskId: string, _: typeof initialState, formData: FormData) {
+export async function updateTaskStatusAction(taskId: string, _: TaskActionState, formData: FormData) {
   const user = await requireSessionUser();
   if (!hasPermission(user.role, permissions.updateTaskStatus)) {
     return { error: "No tienes permiso para actualizar tareas.", success: "" };

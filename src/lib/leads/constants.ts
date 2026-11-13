@@ -1,7 +1,4 @@
-export const marketOptions = [
-  { value: "CDMX", label: "CDMX" },
-  { value: "RIVIERA_MAYA", label: "Riviera Maya" },
-] as const;
+export { marketOptions } from "@/lib/markets";
 
 export const leadStatusOptions = [
   { value: "ACTIVE", label: "Activo" },

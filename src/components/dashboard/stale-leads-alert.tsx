@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { AlertTriangle, ArrowUpRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { getMarketLabel, type AppMarket } from "@/lib/markets";
 import { formatShortDate } from "@/lib/utils";
 
 type StaleLeadAlert = {
   id: string;
   fullName: string;
   stage: string;
-  market: "CDMX" | "RIVIERA_MAYA";
+  market: AppMarket;
   assignedTo: string;
   nextAction: string;
   nextActionAt: Date | null;
@@ -47,7 +48,7 @@ export function StaleLeadsAlert({ leads }: { leads: StaleLeadAlert[] }) {
 
       <div className="mt-5 space-y-3">
         {leads.map((lead) => (
-          <div key={lead.id} className="rounded-2xl border border-white/80 bg-white/90 p-4">
+          <div key={lead.id} className="rounded-2xl border border-white/80 bg-white/90 p-4 shadow-sm">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -56,11 +57,11 @@ export function StaleLeadsAlert({ leads }: { leads: StaleLeadAlert[] }) {
                     {lead.severity === "high" ? "Crítico" : "Atender hoy"}
                   </span>
                 </div>
-                <p className="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-500">{lead.stage} · {lead.market === "RIVIERA_MAYA" ? "Riviera Maya" : "CDMX"} · {lead.assignedTo}</p>
+                <p className="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-500">{lead.stage} · {getMarketLabel(lead.market)} · {lead.assignedTo}</p>
                 <p className="mt-3 text-sm text-zinc-700">{lead.nextAction}</p>
                 <p className="mt-1 text-xs text-zinc-500">{lead.nextActionAt ? `Próxima acción: ${formatShortDate(lead.nextActionAt.toISOString())}` : "Sin próxima acción programada"}</p>
               </div>
-              <Link href={`/leads/${lead.id}`} className="inline-flex items-center gap-2 rounded-2xl border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:text-zinc-950">
+              <Link href={`/leads/${lead.id}`} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:text-zinc-950 sm:w-auto">
                 Abrir lead
                 <ArrowUpRight className="h-4 w-4" />
               </Link>

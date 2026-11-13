@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/shared/page-shell";
 import { LeadNoteForm } from "@/components/leads/lead-note-form";
+import { LeadDeleteButton } from "@/components/leads/lead-delete-button";
 import { LeadQuickAppointmentForm } from "@/components/leads/lead-quick-appointment-form";
 import { LeadQuickTaskForm } from "@/components/leads/lead-quick-task-form";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +10,9 @@ import { Card } from "@/components/ui/card";
 import { ActivityFeed } from "@/components/activity/activity-feed";
 import { requireSessionUser } from "@/lib/auth/session";
 import { getAdvisors, getLeadById } from "@/lib/leads/queries";
-import { formatShortDate } from "@/lib/utils";
+import { getMarketLabel } from "@/lib/markets";
+import { hasPermission, permissions } from "@/lib/permissions";
+import { formatShortDate, toTelHref, toWhatsAppHref } from "@/lib/utils";
 
 export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await requireSessionUser();
@@ -25,6 +28,11 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
     id: advisor.id,
     name: advisor.name,
   }));
+  const canDeleteLead = hasPermission(user.role, permissions.deleteLead);
+  const leadWhatsappHref = toWhatsAppHref(lead.phone, `Hola ${lead.fullName}, te contacto de parte de Valterra.`);
+  const leadTelHref = toTelHref(lead.phone);
+  const advisorWhatsappHref = toWhatsAppHref(lead.assignedTo.phone, `Hola ${lead.assignedTo.name}, seguimiento sobre ${lead.fullName}.`);
+  const advisorTelHref = toTelHref(lead.assignedTo.phone);
 
   return (
     <PageShell>
@@ -32,13 +40,24 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
         <div>
           <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">Lead</p>
           <h1 className="mt-2 text-3xl font-semibold text-zinc-950">{lead.fullName}</h1>
-          <p className="mt-2 text-sm text-zinc-600">{lead.source} · {lead.zone} · {lead.market}</p>
+          <p className="mt-2 text-sm text-zinc-600">{lead.source} · {lead.zone} · {getMarketLabel(lead.market)}</p>
+          {lead.development || lead.property ? (
+            <p className="mt-2 text-sm text-zinc-500">
+              {lead.development ? lead.development.title : "Sin desarrollo"}
+              {lead.property?.unitCode ? ` · ${lead.property.unitCode}` : lead.property ? ` · ${lead.property.title}` : ""}
+            </p>
+          ) : null}
           <div className="mt-3 flex gap-2">
             <Badge tone={lead.status === "LOST" ? "danger" : lead.status === "REACTIVATED" ? "brand" : "success"}>{lead.status}</Badge>
             <Badge tone="neutral">{lead.stage}</Badge>
           </div>
         </div>
-        <Link href={`/leads/${lead.id}/edit`} className="rounded-2xl bg-[#1a1817] px-4 py-3 text-sm font-medium text-white">Editar lead</Link>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          {leadWhatsappHref ? <Link href={leadWhatsappHref} target="_blank" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-medium text-emerald-700">WhatsApp lead</Link> : null}
+          {leadTelHref ? <Link href={leadTelHref} className="rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-center text-sm font-medium text-zinc-800">Llamar lead</Link> : null}
+          <Link href={`/leads/${lead.id}/edit`} className="rounded-2xl bg-[#1a1817] px-4 py-3 text-center text-sm font-medium text-white">Editar lead</Link>
+          {canDeleteLead ? <LeadDeleteButton leadId={lead.id} /> : null}
+        </div>
       </div>
 
       <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
@@ -49,7 +68,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
               <Metric label="Tareas" value={String(lead.tasks.length)} helper={lead.tasks.filter((task) => task.status !== "DONE").length ? `${lead.tasks.filter((task) => task.status !== "DONE").length} activas` : "Todo al día"} />
               <Metric label="Citas" value={String(lead.appointments.length)} helper={lead.appointments.length ? "Con seguimiento" : "Sin agenda"} />
               <Metric label="Notas" value={String(lead.notes.length)} helper={lead.notes.length ? "Con contexto" : "Sin contexto"} />
-              <Metric label="Presupuesto" value={formatBudgetRange(lead.budgetMin, lead.budgetMax)} helper={lead.market === "RIVIERA_MAYA" ? "Mercado Riviera Maya" : "Mercado CDMX"} />
+              <Metric label="Presupuesto" value={formatBudgetRange(lead.budgetMin, lead.budgetMax)} helper={`Mercado ${getMarketLabel(lead.market)}`} />
             </div>
           </Card>
 
@@ -61,13 +80,21 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
               <Info label="Teléfono" value={lead.phone ?? "Sin teléfono"} />
               <Info label="Próxima acción" value={lead.nextAction} />
               <Info label="Fecha próxima acción" value={lead.nextActionAt ? formatShortDate(lead.nextActionAt.toISOString()) : "Sin fecha"} />
+              <Info label="Desarrollo" value={lead.development?.title ?? "No definido"} />
+              <Info label="Unidad" value={lead.property?.unitCode ? `${lead.property.unitCode} · ${lead.property.title}` : lead.property?.title ?? "Sin unidad específica"} />
               <Info label="Interés" value={lead.propertyInterest ?? "No definido"} />
               <Info label="Budget min" value={lead.budgetMin ? `$${lead.budgetMin.toLocaleString("es-MX")}` : "N/D"} />
               <Info label="Budget max" value={lead.budgetMax ? `$${lead.budgetMax.toLocaleString("es-MX")}` : "N/D"} />
             </dl>
+            {lead.assignedTo.phone || lead.phone ? (
+              <div className="mt-6 flex flex-wrap gap-3">
+                {advisorWhatsappHref ? <Link href={advisorWhatsappHref} target="_blank" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">WhatsApp asesor</Link> : null}
+                {advisorTelHref ? <Link href={advisorTelHref} className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700">Llamar asesor</Link> : null}
+              </div>
+            ) : null}
             <div className="mt-6 rounded-2xl bg-zinc-50 p-4">
               <p className="text-sm font-medium text-zinc-700">Perfil</p>
-              <p className="mt-2 text-sm text-zinc-600">{lead.profile ?? "Todavía no hay contexto cualitativo. Qué elegante forma de dispararse en el pie."}</p>
+              <p className="mt-2 text-sm text-zinc-600">{lead.profile ?? "Todavía no hay contexto cualitativo registrado para este lead."}</p>
             </div>
           </Card>
 

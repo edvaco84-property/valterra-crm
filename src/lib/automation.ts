@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import type { AppMarket } from "@/lib/markets";
 
 const stageCadenceMap: Record<string, { title: string; hoursFromNow: number; description: string }> = {
   "Propiedad enviada": {
@@ -24,7 +25,7 @@ const stageCadenceMap: Record<string, { title: string; hoursFromNow: number; des
 };
 
 type AssignWebLeadInput = {
-  market: "CDMX" | "RIVIERA_MAYA";
+  market: AppMarket;
 };
 
 export async function resolveAssigneeForWebLead({ market }: AssignWebLeadInput) {
@@ -61,6 +62,58 @@ export async function resolveAssigneeForWebLead({ market }: AssignWebLeadInput) 
       role: true,
     },
   });
+}
+
+export async function resolveAssigneeForPropertyInquiry({ propertyId, market }: AssignWebLeadInput & { propertyId: string }) {
+  const propertyCreatorLog = await db.activityLog.findFirst({
+    where: {
+      entityType: "property",
+      entityId: propertyId,
+      action: "created",
+      user: {
+        active: true,
+      },
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+    select: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          role: true,
+        },
+      },
+    },
+  });
+
+  if (propertyCreatorLog?.user) return propertyCreatorLog.user;
+
+  return resolveAssigneeForWebLead({ market });
+}
+
+export async function resolveAssigneeForOwnerListing({ market }: AssignWebLeadInput) {
+  const coordinator = await db.user.findFirst({
+    where: {
+      active: true,
+      market,
+      role: { in: ["COORDINATOR", "ADMIN"] },
+    },
+    orderBy: [
+      { role: "asc" },
+      { createdAt: "asc" },
+    ],
+    select: {
+      id: true,
+      name: true,
+      role: true,
+    },
+  });
+
+  if (coordinator) return coordinator;
+
+  return resolveAssigneeForWebLead({ market });
 }
 
 export async function ensureStaleLeadFollowUpTask(leadId: string) {

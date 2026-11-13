@@ -12,6 +12,7 @@ export async function getTeamMembers() {
         id: true,
         name: true,
         email: true,
+        phone: true,
         role: true,
         market: true,
         active: true,

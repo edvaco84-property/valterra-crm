@@ -3,6 +3,7 @@ import { LeadForm } from "@/components/forms/lead-form";
 import { PageShell } from "@/components/shared/page-shell";
 import { requireSessionUser } from "@/lib/auth/session";
 import { getAdvisors, getLeadById } from "@/lib/leads/queries";
+import { getDevelopmentOptions, getPropertyOptions } from "@/lib/properties/queries";
 
 function toDateTimeLocal(value: Date | null) {
   if (!value) return "";
@@ -14,7 +15,12 @@ function toDateTimeLocal(value: Date | null) {
 export default async function EditLeadPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await requireSessionUser();
   const { id } = await params;
-  const [lead, advisors] = await Promise.all([getLeadById(id, user), getAdvisors(user)]);
+  const [lead, advisors, developments, properties] = await Promise.all([
+    getLeadById(id, user),
+    getAdvisors(user),
+    getDevelopmentOptions(),
+    getPropertyOptions(),
+  ]);
 
   if (!lead) notFound();
 
@@ -27,6 +33,8 @@ export default async function EditLeadPage({ params }: { params: Promise<{ id: s
       </div>
       <LeadForm
         advisors={advisors}
+        developments={developments}
+        properties={properties}
         actor={user}
         lead={{
           id: lead.id,
@@ -41,6 +49,8 @@ export default async function EditLeadPage({ params }: { params: Promise<{ id: s
           nextAction: lead.nextAction,
           nextActionAt: toDateTimeLocal(lead.nextActionAt),
           assignedToId: lead.assignedToId,
+          developmentId: lead.developmentId,
+          propertyId: lead.propertyId,
           propertyInterest: lead.propertyInterest,
           profile: lead.profile,
           budgetMin: lead.budgetMin,

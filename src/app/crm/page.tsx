@@ -35,12 +35,16 @@ export default async function CrmHome() {
     <PageShell>
       <section className="grid gap-6 xl:grid-cols-[1.4fr_0.9fr]">
         <div className="space-y-6">
-          <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">Vista general</p>
-            <h1 className="mt-2 text-3xl font-semibold text-zinc-950">Tablero operativo Valterra</h1>
-            <p className="mt-2 max-w-2xl text-sm text-zinc-600">
-              Un solo lugar para leads, propiedades, seguimiento y agenda. Porque operar ventas premium en WhatsApp y memoria humana es una receta preciosa para el caos.
-            </p>
+          <div className="rounded-[30px] border border-white/10 bg-white/8 px-6 py-6 shadow-[0_24px_80px_rgba(0,0,0,0.16)] backdrop-blur-xl">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="text-sm uppercase tracking-[0.3em] text-amber-200/90">Vista general</p>
+                <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white">Tablero operativo Valterra</h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-300">
+                  Un solo lugar para leads, propiedades, seguimiento y agenda, con una capa visual más limpia y más intuitiva para operar diario.
+                </p>
+              </div>
+            </div>
           </div>
           <StatsGrid stats={stats} />
           <StaleLeadsAlert leads={staleLeadAlerts} />

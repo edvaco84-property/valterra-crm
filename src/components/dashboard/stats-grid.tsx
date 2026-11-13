@@ -23,15 +23,15 @@ export function StatsGrid({ stats }: { stats: DashboardStats }) {
   ];
 
   return (
-    <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <section className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       {items.map(({ label, value, icon: Icon }) => (
-        <Card key={label} className="flex items-center justify-between gap-4">
+        <Card key={label} className="flex items-center justify-between gap-3 border-white/50 bg-white/88 sm:gap-4">
           <div>
-            <p className="text-sm text-zinc-500">{label}</p>
-            <p className="mt-2 text-3xl font-semibold text-zinc-950">{value}</p>
+            <p className="text-xs sm:text-sm font-medium text-zinc-500">{label}</p>
+            <p className="mt-2 break-words text-2xl font-semibold tracking-tight text-zinc-950 sm:text-3xl">{value}</p>
           </div>
-          <div className="rounded-2xl bg-amber-50 p-3 text-amber-700">
-            <Icon className="h-6 w-6" />
+          <div className="shrink-0 rounded-[20px] border border-amber-200/70 bg-amber-50/90 p-2.5 text-amber-700 shadow-sm sm:p-3">
+            <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
         </Card>
       ))}

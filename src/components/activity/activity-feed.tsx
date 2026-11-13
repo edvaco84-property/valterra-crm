@@ -46,7 +46,7 @@ export function ActivityFeed({ items, title = "Actividad reciente" }: { items: A
               <p className="mt-2 text-xs text-zinc-500">{formatShortDate(item.createdAt.toISOString())}</p>
             </div>
           );
-        }) : <p className="text-sm text-zinc-500">Todavía no hay actividad registrada. Qué paz tan sospechosa.</p>}
+        }) : <p className="text-sm text-zinc-500">Todavía no hay actividad registrada.</p>}
       </div>
     </Card>
   );

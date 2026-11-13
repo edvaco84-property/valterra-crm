@@ -7,7 +7,8 @@ import { db } from "@/lib/db";
 import { requireSessionUser } from "@/lib/auth/session";
 import { logActivity } from "@/lib/activity-log";
 import { ensureStageCadenceTask, ensureStaleLeadFollowUpTask } from "@/lib/automation";
-import { buildLeadAccessWhere, buildTaskAccessWhere, buildAppointmentAccessWhere } from "@/lib/access";
+import { buildLeadAccessWhere } from "@/lib/access";
+import { marketValues } from "@/lib/markets";
 import { hasPermission, permissions } from "@/lib/permissions";
 
 const leadSchema = z.object({
@@ -15,13 +16,15 @@ const leadSchema = z.object({
   email: z.string().email("Email inválido.").optional().or(z.literal("")),
   phone: z.string().min(8, "Teléfono muy corto.").optional().or(z.literal("")),
   source: z.string().min(2, "Indica la fuente."),
-  market: z.enum(["CDMX", "RIVIERA_MAYA"]),
+  market: z.enum(marketValues),
   zone: z.string().min(2, "Indica la zona."),
   stage: z.string().min(2, "Indica la etapa."),
   status: z.enum(["ACTIVE", "REACTIVATED", "WON", "LOST"]),
   nextAction: z.string().min(3, "Define la próxima acción."),
   nextActionAt: z.string().optional(),
   assignedToId: z.string().min(1, "Selecciona asesor."),
+  developmentId: z.string().optional(),
+  propertyId: z.string().optional(),
   propertyInterest: z.string().optional(),
   profile: z.string().optional(),
   budgetMin: z.string().optional(),
@@ -41,6 +44,8 @@ function parseLeadForm(formData: FormData) {
     nextAction: String(formData.get("nextAction") ?? ""),
     nextActionAt: String(formData.get("nextActionAt") ?? ""),
     assignedToId: String(formData.get("assignedToId") ?? ""),
+    developmentId: String(formData.get("developmentId") ?? ""),
+    propertyId: String(formData.get("propertyId") ?? ""),
     propertyInterest: String(formData.get("propertyInterest") ?? ""),
     profile: String(formData.get("profile") ?? ""),
     budgetMin: String(formData.get("budgetMin") ?? ""),
@@ -61,6 +66,8 @@ function mapLeadData(data: z.infer<typeof leadSchema>, forcedAssignedToId?: stri
     nextAction: data.nextAction,
     nextActionAt: data.nextActionAt ? new Date(data.nextActionAt) : null,
     assignedToId: forcedAssignedToId ?? data.assignedToId,
+    developmentId: data.developmentId || null,
+    propertyId: data.propertyId || null,
     propertyInterest: data.propertyInterest || null,
     profile: data.profile || null,
     budgetMin: data.budgetMin ? Number(data.budgetMin) : null,
@@ -188,4 +195,47 @@ export async function updateLeadPipelineAction(leadId: string, _: { error: strin
   revalidatePath(`/leads/${leadId}`);
 
   return { error: "", success: "Lead actualizado en pipeline." };
+}
+
+export async function deleteLeadAction(leadId: string, _: { error: string }, _formData: FormData) {
+  void _;
+  void _formData;
+
+  const user = await requireSessionUser();
+
+  if (!hasPermission(user.role, permissions.deleteLead)) {
+    return { error: "No tienes permiso para borrar leads." };
+  }
+
+  const lead = await db.lead.findFirst({
+    where: { id: leadId, ...buildLeadAccessWhere(user) },
+    select: { id: true, fullName: true },
+  });
+
+  if (!lead) {
+    return { error: "No encontré ese lead o no lo puedes borrar." };
+  }
+
+  await db.$transaction(async (tx) => {
+    await tx.activityLog.deleteMany({ where: { entityType: "lead", entityId: leadId } });
+    await tx.note.deleteMany({ where: { leadId } });
+    await tx.task.deleteMany({ where: { leadId } });
+    await tx.appointment.deleteMany({ where: { leadId } });
+    await tx.lead.delete({ where: { id: leadId } });
+  });
+
+  await logActivity({
+    userId: user.id,
+    action: "deleted",
+    entityType: "lead",
+    entityId: leadId,
+    entityLabel: lead.fullName,
+    details: "Lead eliminado del CRM.",
+  });
+
+  revalidatePath("/");
+  revalidatePath("/crm");
+  revalidatePath("/leads");
+  revalidatePath("/pipeline");
+  redirect("/leads");
 }

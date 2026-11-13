@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { updateAppointmentStatusAction } from "@/app/actions/appointments";
+import { primaryButtonClassName, selectClassName } from "@/lib/utils";
 
 const initialState = { error: "", success: "" };
 
@@ -10,16 +11,16 @@ export function AppointmentStatusForm({ appointmentId, currentStatus }: { appoin
   const [state, formAction, pending] = useActionState(action, initialState);
 
   return (
-    <form action={formAction} className="flex flex-wrap items-center gap-2">
-      <select name="status" defaultValue={currentStatus} className="rounded-xl border border-zinc-200 px-3 py-2 text-sm text-zinc-700 outline-none focus:border-zinc-400">
+    <form action={formAction} className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+      <select name="status" defaultValue={currentStatus} className={`${selectClassName} min-h-11 text-sm sm:w-auto`}>
         <option value="SCHEDULED">Agendada</option>
         <option value="COMPLETED">Completada</option>
         <option value="CANCELED">Cancelada</option>
       </select>
-      <button disabled={pending} className="rounded-xl bg-zinc-900 px-3 py-2 text-sm text-white disabled:opacity-60">
+      <button disabled={pending} className={`${primaryButtonClassName} min-h-11 px-4 text-sm sm:w-auto`}>
         {pending ? "Guardando..." : "Actualizar"}
       </button>
-      {state.error ? <p className="text-xs text-rose-600">{state.error}</p> : null}
+      {state.error ? <p className="text-xs text-rose-600 sm:basis-full">{state.error}</p> : null}
     </form>
   );
 }

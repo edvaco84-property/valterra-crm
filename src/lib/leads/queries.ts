@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import type { SessionActor } from "@/lib/access";
 import { buildLeadAccessWhere } from "@/lib/access";
+import type { AppMarket } from "@/lib/markets";
 
 export async function getLeadList(filters?: {
   query?: string;
@@ -25,10 +26,13 @@ export async function getLeadList(filters?: {
               { phone: { contains: query, mode: "insensitive" } },
               { source: { contains: query, mode: "insensitive" } },
               { zone: { contains: query, mode: "insensitive" } },
+              { propertyInterest: { contains: query, mode: "insensitive" } },
+              { development: { title: { contains: query, mode: "insensitive" } } },
+              { property: { title: { contains: query, mode: "insensitive" } } },
             ],
           }
         : {}),
-      ...(market ? { market: market as "CDMX" | "RIVIERA_MAYA" } : {}),
+      ...(market ? { market: market as AppMarket } : {}),
       ...(status ? { status: status as "ACTIVE" | "REACTIVATED" | "LOST" | "WON" } : {}),
       ...(assignedToId ? { assignedToId } : {}),
     },
@@ -38,6 +42,19 @@ export async function getLeadList(filters?: {
           id: true,
           name: true,
           role: true,
+        },
+      },
+      development: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+      property: {
+        select: {
+          id: true,
+          title: true,
+          unitCode: true,
         },
       },
     },
@@ -61,6 +78,13 @@ export async function getLeadById(id: string, actor?: SessionActor) {
           name: true,
           role: true,
           email: true,
+          phone: true,
+        },
+      },
+      development: true,
+      property: {
+        include: {
+          development: true,
         },
       },
       notes: {

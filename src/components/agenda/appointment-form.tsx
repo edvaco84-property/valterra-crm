@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { createAppointmentAction } from "@/app/actions/appointments";
+import { inputClassName, primaryButtonClassName, selectClassName, textareaClassName } from "@/lib/utils";
 
 const initialState = { error: "", success: "" };
 
@@ -11,7 +12,7 @@ export function AppointmentForm({ leads, advisors }: { leads: Option[]; advisors
   const [state, formAction, pending] = useActionState(createAppointmentAction, initialState);
 
   return (
-    <form action={formAction} className="space-y-4 rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
+    <form action={formAction} className="space-y-4 rounded-[28px] border border-white/60 bg-white/82 p-5 shadow-[0_18px_60px_rgba(24,24,27,0.12)] backdrop-blur-xl">
       <div>
         <h3 className="text-lg font-semibold text-zinc-950">Nueva cita</h3>
         <p className="text-sm text-zinc-500">Agenda llamadas, visitas o reuniones sin improvisar de más.</p>
@@ -27,11 +28,11 @@ export function AppointmentForm({ leads, advisors }: { leads: Option[]; advisors
       </div>
       <div className="space-y-2">
         <label className="text-sm font-medium text-zinc-700" htmlFor="result">Resultado / notas</label>
-        <textarea id="result" name="result" rows={3} className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-400" />
+        <textarea id="result" name="result" rows={3} className={textareaClassName} />
       </div>
       {state.error ? <p className="text-sm text-rose-600">{state.error}</p> : null}
       {state.success ? <p className="text-sm text-emerald-600">{state.success}</p> : null}
-      <button disabled={pending} className="rounded-2xl bg-[#1a1817] px-5 py-3 font-medium text-white disabled:opacity-60">
+      <button disabled={pending} className={primaryButtonClassName}>
         {pending ? "Guardando..." : "Crear cita"}
       </button>
     </form>
@@ -42,7 +43,7 @@ function Field({ label, name, type = "text", required = false }: { label: string
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium text-zinc-700" htmlFor={name}>{label}</label>
-      <input id={name} name={name} type={type} required={required} className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-400" />
+      <input id={name} name={name} type={type} required={required} className={inputClassName} />
     </div>
   );
 }
@@ -51,7 +52,7 @@ function Select({ label, name, options }: { label: string; name: string; options
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium text-zinc-700" htmlFor={name}>{label}</label>
-      <select id={name} name={name} className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-zinc-900 outline-none focus:border-zinc-400">
+      <select id={name} name={name} className={selectClassName}>
         {options.map((option) => (
           <option key={`${name}-${option.id}-${option.name}`} value={option.id}>{option.name}</option>
         ))}

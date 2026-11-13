@@ -19,9 +19,9 @@ const appointmentSchema = z.object({
   advisorId: z.string().min(1, "Selecciona asesor."),
 });
 
-const initialState = { error: "", success: "" };
+type AppointmentActionState = { error: string; success: string };
 
-export async function createAppointmentAction(_: typeof initialState, formData: FormData) {
+export async function createAppointmentAction(_: AppointmentActionState, formData: FormData) {
   const user = await requireSessionUser();
   if (!hasPermission(user.role, permissions.createAppointment)) {
     return { error: "No tienes permiso para crear citas.", success: "" };
@@ -81,7 +81,7 @@ export async function createAppointmentAction(_: typeof initialState, formData: 
   return { error: "", success: "Cita creada." };
 }
 
-export async function updateAppointmentStatusAction(appointmentId: string, _: typeof initialState, formData: FormData) {
+export async function updateAppointmentStatusAction(appointmentId: string, _: AppointmentActionState, formData: FormData) {
   const user = await requireSessionUser();
   if (!hasPermission(user.role, permissions.updateAppointmentStatus)) {
     return { error: "No tienes permiso para actualizar citas.", success: "" };

@@ -16,7 +16,7 @@ export function ReportsAutomation({ snapshot }: { snapshot: AutomationSnapshot }
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-zinc-950">Automatización operativa</h2>
-          <p className="text-sm text-zinc-500">Cuánto trabajo está disparando el sistema y por qué reglas.</p>
+          <p className="text-sm text-zinc-500">Volumen de trabajo automatizado y reglas que lo originan.</p>
         </div>
         <div className="rounded-2xl bg-amber-50 px-4 py-3 text-right text-amber-800">
           <p className="text-xs uppercase tracking-[0.16em]">Tareas auto</p>

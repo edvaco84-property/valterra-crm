@@ -21,10 +21,10 @@ export default async function LeadsPage({
 
   return (
     <PageShell>
-      <div>
-        <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">Leads</p>
-        <h1 className="mt-2 text-3xl font-semibold text-zinc-950">Gestión de oportunidades</h1>
-        <p className="mt-2 text-sm text-zinc-600">Ahora sí, con lectura real desde Prisma en lugar de humo decorativo.</p>
+      <div className="rounded-[30px] border border-white/10 bg-white/8 px-6 py-6 shadow-[0_24px_80px_rgba(0,0,0,0.16)] backdrop-blur-xl">
+        <p className="text-sm uppercase tracking-[0.3em] text-amber-200/90">Leads</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white">Gestión de oportunidades</h1>
+        <p className="mt-2 text-sm leading-6 text-zinc-300">Consulta, filtra y prioriza oportunidades con contexto comercial y próxima acción.</p>
       </div>
       <LeadsFilters query={params.q} market={params.market} status={params.status} assignedToId={params.assignedToId} />
       <LeadsTable leads={leads} />

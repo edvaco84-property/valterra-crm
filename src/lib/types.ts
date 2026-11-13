@@ -1,4 +1,4 @@
-export type Market = "CDMX" | "RIVIERA_MAYA";
+export type Market = "CDMX" | "ESTADO_DE_MEXICO" | "RIVIERA_MAYA";
 
 export type Role = "ADMIN" | "COORDINATOR" | "ADVISOR";
 

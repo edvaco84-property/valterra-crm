@@ -41,19 +41,19 @@ export function TasksList({ tasks, actor }: { tasks: TaskItem[]; actor?: Actor }
       </div>
       <div className="mt-5 space-y-3">
         {tasks.length ? tasks.map((task) => (
-          <div key={task.id} className="rounded-2xl border border-zinc-100 p-4">
+          <div key={task.id} className="rounded-[24px] border border-zinc-100 bg-white/75 p-4 shadow-sm sm:p-4">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div>
+                <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-medium text-zinc-950">{task.title}</p>
+                    <p className="text-base font-medium text-zinc-950">{task.title}</p>
                     {task.automationSource ? <Badge tone="brand">Automatización</Badge> : null}
                   </div>
-                  <p className="mt-1 text-sm text-zinc-500">{task.assignee.name}{task.lead ? ` · ${task.lead.fullName}` : ""}</p>
+                  <p className="mt-1 text-sm leading-6 text-zinc-500">{task.assignee.name}{task.lead ? ` · ${task.lead.fullName}` : ""}</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                   <Badge tone={tones[task.status]}>{task.status}</Badge>
-                  <span className="text-sm text-zinc-500">{formatShortDate(task.dueAt.toISOString())}</span>
+                  <span className="text-xs sm:text-sm text-zinc-500">{formatShortDate(task.dueAt.toISOString())}</span>
                 </div>
               </div>
               {canUpdateTask(task, actor) ? <TaskStatusForm taskId={task.id} currentStatus={task.status} /> : null}

@@ -1,5 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { InquiryDeleteButton } from "@/components/inquiries/inquiry-delete-button";
+import { getMarketLabel, type AppMarket } from "@/lib/markets";
 import { formatShortDate } from "@/lib/utils";
 
 type InquiryItem = {
@@ -7,11 +9,12 @@ type InquiryItem = {
   fullName: string;
   email: string | null;
   phone: string | null;
-  market: "CDMX" | "RIVIERA_MAYA" | null;
+  market: AppMarket | null;
   interest: string | null;
   message: string | null;
   source: string;
   preferredContact: string | null;
+  seenAt: Date | null;
   createdAt: Date;
 };
 
@@ -28,7 +31,8 @@ export function InquiriesTable({ inquiries }: { inquiries: InquiryItem[] }) {
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <p className="font-medium text-zinc-950">{inquiry.fullName}</p>
-                <Badge tone="brand">{inquiry.market === "RIVIERA_MAYA" ? "Riviera Maya" : inquiry.market === "CDMX" ? "CDMX" : "Sin mercado"}</Badge>
+                <Badge tone="brand">{getMarketLabel(inquiry.market)}</Badge>
+                {!inquiry.seenAt ? <Badge tone="warning">Nuevo</Badge> : null}
               </div>
               <p className="mt-2 text-sm text-zinc-600">{inquiry.interest || "Sin interés definido"}</p>
               {inquiry.message ? <p className="mt-2 text-sm text-zinc-500">{inquiry.message}</p> : null}
@@ -38,7 +42,8 @@ export function InquiriesTable({ inquiries }: { inquiries: InquiryItem[] }) {
               <p className="mt-1">{inquiry.phone || "Sin teléfono"}</p>
               <p className="mt-1">Canal: {inquiry.preferredContact || "Sin preferencia"}</p>
             </div>
-            <div className="text-sm text-zinc-500 lg:text-right">
+            <div className="flex flex-col gap-3 text-sm text-zinc-500 lg:items-end lg:text-right">
+              <InquiryDeleteButton inquiryId={inquiry.id} />
               <p>{formatShortDate(inquiry.createdAt.toISOString())}</p>
               <p className="mt-1 uppercase tracking-[0.18em]">{inquiry.source}</p>
             </div>

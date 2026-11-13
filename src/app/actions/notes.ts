@@ -10,12 +10,12 @@ import { hasPermission, permissions } from "@/lib/permissions";
 
 const noteSchema = z.object({
   leadId: z.string().min(1, "Falta el lead."),
-  body: z.string().min(3, "Escribe una nota útil, no una obra abstracta."),
+  body: z.string().min(3, "Escribe una nota con suficiente contexto."),
 });
 
-const initialState = { error: "", success: "" };
+type NoteActionState = { error: string; success: string };
 
-export async function createLeadNoteAction(_: typeof initialState, formData: FormData) {
+export async function createLeadNoteAction(_: NoteActionState, formData: FormData) {
   const user = await requireSessionUser();
   if (!hasPermission(user.role, permissions.addLeadNote)) {
     return { error: "No tienes permiso para agregar notas.", success: "" };
