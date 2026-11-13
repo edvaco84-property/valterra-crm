@@ -1,168 +1,495 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Building2, Handshake, Landmark, TrendingUp } from "lucide-react";
+import { Building2, Handshake, Landmark, TrendingUp } from "lucide-react";
 import { ContactForm } from "@/components/forms/contact-form";
-import { formatCurrency } from "@/lib/utils";
+import { PublicSiteNav } from "@/components/public/public-site-nav";
+import { PremiumPropertiesCarousel } from "@/components/properties/premium-properties-carousel";
 import { getPublishedProperties } from "@/lib/properties/queries";
+
+export const metadata: Metadata = {
+  title: "Valterra | Propiedades e inversión inmobiliaria con oportunidades en Tulum",
+  description:
+    "Valterra conecta compra, inversión y comercialización inmobiliaria en CDMX, Estado de Mexico y Riviera Maya, con catálogo público, rutas de contacto y acceso directo a Yaax Tulum Condos.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Valterra | Propiedades e inversión inmobiliaria con oportunidades en Tulum",
+    description:
+      "Explora propiedades publicadas, conoce la ruta comercial de Valterra y entra al clúster de Yaax Tulum Condos para búsquedas de preventa en Tulum.",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Valterra | Propiedades e inversión inmobiliaria con oportunidades en Tulum",
+    description:
+      "Catálogo público, acompañamiento comercial y rutas claras hacia Yaax Tulum Condos para compra e inversión en Tulum.",
+  },
+};
 
 const benefits = [
   {
-    title: "Plusvalía sólida",
+    title: "Selección de oportunidades",
+    description: "Activos revisados por zona, perfil de compra y potencial comercial.",
     icon: TrendingUp,
   },
   {
-    title: "Exclusividad y elegancia",
+    title: "Inventario premium",
+    description: "Propiedades con mejor ubicación, presencia y posibilidad de valorización.",
     icon: Building2,
   },
   {
-    title: "Lectura estratégica",
+    title: "Lectura de mercado",
+    description: "Contexto real para decidir entre residencia, inversión o comercialización.",
     icon: Landmark,
   },
   {
-    title: "Atención personalizada",
+    title: "Seguimiento personalizado",
+    description: "Acompañamiento directo desde el primer contacto hasta la negociación.",
     icon: Handshake,
   },
 ];
 
+const audienceCards = [
+  {
+    title: "Quiero comprar o invertir",
+    copy: "Explora oportunidades seleccionadas en CDMX, Estado de Mexico y Riviera Maya con criterios claros de ubicación, precio y perfil de activo.",
+    href: "/propiedades",
+    cta: "Ver catálogo",
+  },
+  {
+    title: "Quiero vender o listar mi propiedad",
+    copy: "Solicita acompañamiento comercial, posicionamiento del activo y una ruta más clara para captar compradores.",
+    href: "#contacto",
+    cta: "Solicitar valoración",
+  },
+  {
+    title: "Soy broker",
+    copy: "Entra al CRM de Valterra para dar seguimiento a leads, pipeline, tareas y agenda comercial.",
+    href: "/brokers",
+    cta: "Acceso brokers",
+  },
+];
+
+const processSteps = [
+  {
+    title: "Entendemos tu objetivo",
+    copy: "Compra patrimonial, inversión, residencia o comercialización de tu propiedad.",
+  },
+  {
+    title: "Filtramos oportunidades reales",
+    copy: "Seleccionamos activos con criterio de zona, precio, operación y potencial comercial.",
+  },
+  {
+    title: "Coordinamos seguimiento y negociación",
+    copy: "Acompañamos visitas, validación y conversaciones con una ejecución comercial más ordenada.",
+  },
+  {
+    title: "Cerramos con atención personalizada",
+    copy: "Cada proceso se trabaja con respuesta puntual, claridad y seguimiento uno a uno.",
+  },
+];
+
+const marketCards = [
+  {
+    title: "CDMX",
+    copy: "Activos urbanos con foco en ubicación, conectividad, demanda y valor patrimonial de largo plazo.",
+    href: "/propiedades?mercado=CDMX",
+    cta: "Ver oportunidades en CDMX",
+  },
+  {
+    title: "Estado de Mexico",
+    copy: "Terrenos y activos patrimoniales con lectura más precisa de entorno, acceso y potencial de resguardo o desarrollo.",
+    href: "/propiedades?mercado=ESTADO_DE_MEXICO",
+    cta: "Ver oportunidades en Estado de Mexico",
+  },
+  {
+    title: "Riviera Maya",
+    copy: "Oportunidades residenciales y de inversión en destinos con atractivo patrimonial, vacacional y comercial.",
+    href: "/propiedades?mercado=RIVIERA_MAYA",
+    cta: "Ver oportunidades en Riviera Maya",
+  },
+];
+
+const trustSignals = [
+  "Tres mercados estratégicos",
+  "Catálogo publicado y actualizado",
+  "Atención directa por WhatsApp y email",
+  "Seguimiento comercial personalizado",
+];
+
+const yaaxIntentCards = [
+  {
+    eyebrow: "Preventa",
+    title: "Departamentos en preventa en Tulum",
+    copy: "La landing principal de Yaax ya resume tipologías, precio de entrada y contacto comercial directo sin mandar al lead a una galería muda.",
+    href: "/desarrollos/yaax-tulum-condos",
+    cta: "Ver preventa Yaax",
+  },
+  {
+    eyebrow: "Región 11",
+    title: "Propiedades en Región 11 Tulum",
+    copy: "Ruta específica para quien ya busca ubicación y quiere filtrar inventario con contexto de zona, ticket y perfil patrimonial.",
+    href: "/desarrollos/yaax-tulum-condos/region-11-tulum",
+    cta: "Explorar Región 11",
+  },
+  {
+    eyebrow: "2 recámaras",
+    title: "Departamentos de 2 recámaras en Tulum",
+    copy: "Una página enfocada en compradores que necesitan más metraje útil, mejor distribución y un lead menos ambiguo desde la primera visita.",
+    href: "/desarrollos/yaax-tulum-condos/departamentos-2-recamaras-en-tulum",
+    cta: "Ver 2 recámaras",
+  },
+  {
+    eyebrow: "3 rec lock-off",
+    title: "Departamentos de 3 recámaras lock-off en Tulum",
+    copy: "Ruta para compradores de ticket más alto que ya comparan amplitud, distribución flexible y una conversación comercial más concreta.",
+    href: "/desarrollos/yaax-tulum-condos/departamentos-3-recamaras-lock-off-en-tulum",
+    cta: "Ver 3 rec lock-off",
+  },
+  {
+    eyebrow: "Studios",
+    title: "Studios en Tulum",
+    copy: "Entrada más ligera para inversión o segunda residencia con una ruta interna clara hacia disponibilidad publicada y contacto comercial.",
+    href: "/desarrollos/yaax-tulum-condos/studios-en-tulum",
+    cta: "Ver studios",
+  },
+  {
+    eyebrow: "Penthouses",
+    title: "Penthouses en Tulum",
+    copy: "Ruta premium para leads que ya buscan más metraje, compra patrimonial y una conversación comercial menos genérica desde la primera visita.",
+    href: "/desarrollos/yaax-tulum-condos/penthouses-en-tulum",
+    cta: "Ver penthouses",
+  },
+];
+
+const publicNavItems = [
+  { href: "#inicio", label: "Inicio" },
+  { href: "#oportunidades", label: "Oportunidades" },
+  { href: "#proceso", label: "Proceso" },
+  { href: "#mercados", label: "Mercados" },
+  { href: "/brokers", label: "Acceso brokers" },
+  { href: "#contacto", label: "Contacto" },
+];
+
 export default async function LandingPage() {
-  const publishedProperties = await getPublishedProperties(3);
+  const publishedProperties = await getPublishedProperties();
+  const siteUrl = process.env.APP_URL || "https://valterra-crm.fly.dev";
+  const homeUrl = new URL("/", siteUrl).toString();
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        name: "Valterra",
+        description:
+          "Sitio público de Valterra para propiedades, inversión inmobiliaria y rutas de contacto con foco en CDMX, Estado de Mexico, Riviera Maya y Yaax Tulum Condos.",
+        url: homeUrl,
+      },
+      {
+        "@type": "RealEstateAgent",
+        name: "Valterra",
+        url: homeUrl,
+        areaServed: ["CDMX", "Estado de Mexico", "Riviera Maya", "Tulum"],
+        knowsAbout: [
+          "propiedades en venta",
+          "inversión inmobiliaria",
+          "preventa en Tulum",
+          "departamentos en Tulum",
+          "propiedades en Región 11 Tulum",
+        ],
+      },
+      {
+        "@type": "ItemList",
+        name: "Rutas Yaax Tulum Condos",
+        itemListElement: yaaxIntentCards.map((card, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: card.title,
+          url: new URL(card.href, siteUrl).toString(),
+        })),
+      },
+    ],
+  };
 
   return (
     <main className="bg-[#171310] text-[#f5ede2]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <PublicSiteNav items={publicNavItems} whatsappHref="https://wa.me/529984635201" />
       <div className="mx-auto max-w-[1080px] bg-[#171310] shadow-[0_8px_30px_rgba(0,0,0,0.18)]">
-        <header className="border-b border-[#6b5841]/45 bg-[#1b1612] px-6 py-4 sm:px-10">
-          <div className="flex flex-col gap-4 text-[11px] uppercase tracking-[0.28em] text-[#d6c0a0] sm:flex-row sm:items-center sm:justify-between">
+        <header className="border-b border-[#6b5841]/45 bg-[#1b1612] px-4 py-3 sm:px-10 sm:py-4">
+          <div className="flex flex-col gap-3 text-[10px] uppercase tracking-[0.24em] text-[#d6c0a0] sm:flex-row sm:items-center sm:justify-between sm:text-[11px] sm:tracking-[0.28em]">
             <a href="#inicio" className="flex items-center justify-center sm:justify-start">
-              <Image src="/branding/valterra-logo.jpg" alt="Valterra" width={420} height={360} className="h-auto w-[138px] sm:w-[160px] object-contain opacity-95" priority />
+              <Image src="/branding/valterra-logo.jpg" alt="Valterra" width={420} height={360} className="h-auto w-[92px] sm:w-[160px] object-contain opacity-95" priority />
             </a>
-            <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-center sm:justify-end">
+            <nav className="hidden flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center sm:flex sm:justify-end sm:gap-x-5 sm:gap-y-3">
               <a href="#inicio" className="transition hover:text-white">Inicio</a>
-              <a href="#nosotros" className="transition hover:text-white">Nosotros</a>
+              <a href="#oportunidades" className="transition hover:text-white">Oportunidades</a>
+              <a href="#proceso" className="transition hover:text-white">Proceso</a>
               <a href="#mercados" className="transition hover:text-white">Mercados</a>
+              <Link href="/brokers" className="transition hover:text-white">Acceso brokers</Link>
               <a href="#contacto" className="transition hover:text-white">Contacto</a>
             </nav>
           </div>
         </header>
 
-        <section id="inicio" className="relative min-h-[520px] overflow-hidden border-b border-[#6b5841]/45 px-6 py-10 sm:px-10">
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,12,10,0.35),rgba(15,12,10,0.55)),url('https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.2)_55%,rgba(0,0,0,0.48)_100%)]" />
+        <section id="inicio" className="relative min-h-[480px] overflow-hidden border-b border-[#6b5841]/45 px-4 py-8 sm:min-h-[560px] sm:px-10 sm:py-10">
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,12,10,0.42),rgba(15,12,10,0.62)),url('https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.2)_55%,rgba(0,0,0,0.52)_100%)]" />
 
-          <div className="relative z-10 flex min-h-[440px] items-center justify-center text-center">
-            <div className="max-w-2xl">
-              <h1 className="font-serif text-5xl leading-[1.05] text-[#f7efe3] sm:text-6xl">
-                Patrimonio
+          <div className="relative z-10 flex min-h-[400px] items-center justify-center text-center sm:min-h-[480px]">
+            <div className="max-w-3xl">
+              <p className="text-xs uppercase tracking-[0.28em] text-[#d6c0a0]">CDMX, Estado de Mexico y Riviera Maya</p>
+              <h1 className="mt-4 font-serif text-[3.25rem] leading-[0.98] text-[#f7efe3] sm:text-6xl sm:leading-[1.02]">
+                Propiedades e inversión inmobiliaria
                 <br />
-                con visión
+                con criterio comercial
               </h1>
-              <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#f0e6d8]/88 sm:text-base">
-                Conectamos a clientes exclusivos con propiedades selectas y oportunidades de inversión en mercados premium de CDMX y Riviera Maya.
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-[#f0e6d8]/88 sm:text-base">
+                Valterra asesora a compradores, inversionistas y propietarios que buscan activos bien ubicados, análisis comercial claro y acompañamiento discreto durante todo el proceso.
               </p>
-              <div className="mt-8">
-                <a href="#mercados" className="inline-flex items-center justify-center bg-[#d3b184] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#1d1712] transition hover:bg-[#e0bf95]">
-                  Descubrir propiedades
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <Link href="/propiedades" className="inline-flex min-h-12 items-center justify-center bg-[#d3b184] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#1d1712] transition hover:bg-[#e0bf95]">
+                  Ver propiedades
+                </Link>
+                <Link href="/brokers" className="inline-flex min-h-12 items-center justify-center border border-[#8b7354] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5">
+                  Acceso brokers
+                </Link>
+                <a href="#contacto" className="inline-flex min-h-12 items-center justify-center border border-[#8b7354] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5">
+                  Quiero vender o listar
                 </a>
+              </div>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] uppercase tracking-[0.16em] text-[#e3d4bf]/78 sm:gap-x-5 sm:text-[11px] sm:tracking-[0.18em]">
+                <span>Atención personalizada</span>
+                <span>Oportunidades seleccionadas</span>
+                <span>Seguimiento comercial real</span>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-8 border-b border-[#6b5841]/45 bg-[#171310] px-6 py-12 sm:px-10 lg:grid-cols-[1fr_1.05fr]">
-          <div className="flex flex-col justify-center">
-            <h2 className="max-w-md font-serif text-4xl leading-tight text-[#f4e7d7]">
-              Elegancia patrimonial
-              <br />
-              en bienes raíces
-            </h2>
-            <p className="mt-5 max-w-md text-sm leading-7 text-[#e4d6c4]/82">
-              Valterra selecciona propiedades premium en CDMX y Riviera Maya para clientes exigentes que buscan patrimonio, plusvalía y exclusividad.
-            </p>
-            <div className="mt-7">
-              <a href="#nosotros" className="inline-flex items-center justify-center bg-[#d3b184] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#1d1712] transition hover:bg-[#e0bf95]">
-                Descubre más
-              </a>
+        <section className="border-b border-[#6b5841]/45 bg-[#171310] px-6 py-8 sm:px-10">
+          <div className="grid gap-5 rounded-[2rem] border border-[#5f503d]/45 bg-[linear-gradient(135deg,#211913_0%,#171310_62%,#302217_100%)] p-6 sm:p-8 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <p className="text-xs uppercase tracking-[0.24em] text-[#c5a57c]">Desarrollo destacado</p>
+              <h2 className="mt-3 font-serif text-4xl text-[#f4e7d7]">Yaax Tulum Condos ya tiene landing comercial nueva.</h2>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-[#dccdb8]/82">
+                Rehicimos la narrativa para venta real: tipologías, precio de entrada, CTAs directos y captura de lead con contexto. Mucho mejor que mandar tráfico a una postal bonita con ansiedad.
+              </p>
+            </div>
+            <div className="flex flex-col justify-center gap-3 lg:items-end">
+              <Link
+                href="/desarrollos/yaax-tulum-condos"
+                className="inline-flex min-h-12 items-center justify-center bg-[#d3b184] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#1d1712] transition hover:bg-[#e0bf95]"
+              >
+                Ver landing de Yaax
+              </Link>
+              <Link
+                href="/propiedades?mercado=RIVIERA_MAYA"
+                className="inline-flex min-h-12 items-center justify-center border border-[#8b7354] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5"
+              >
+                Ver inventario Riviera Maya
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-[#6b5841]/45 bg-[#120f0d] px-6 py-10 sm:px-10">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.24em] text-[#c5a57c]">Compra e inversión en Tulum</p>
+              <h2 className="mt-3 font-serif text-4xl text-[#f4e7d7]">Rutas de búsqueda que ya están listas para captar intención real.</h2>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-[#dccdb8]/82">
+                En lugar de concentrar todo en una sola página, Valterra ya enlaza accesos más precisos para preventa, Región 11 y tipologías clave dentro de Yaax Tulum Condos.
+              </p>
+            </div>
+            <div>
+              <Link href="/desarrollos/yaax-tulum-condos" className="inline-flex min-h-12 items-center justify-center border border-[#8b7354] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5">
+                Ver clúster Yaax completo
+              </Link>
             </div>
           </div>
 
-          <div className="min-h-[280px] bg-[url('https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center shadow-[0_12px_28px_rgba(0,0,0,0.25)]" />
+          <div className="mt-8 grid gap-4 lg:grid-cols-4">
+            {yaaxIntentCards.map((item) => (
+              <div key={item.title} className="rounded-[1.5rem] border border-[#5f503d]/45 bg-[#1b1612] p-6">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#c5a57c]">{item.eyebrow}</p>
+                <h3 className="mt-3 font-serif text-2xl text-[#f4e7d7]">{item.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-[#dccdb8]/82">{item.copy}</p>
+                <div className="mt-6">
+                  <Link href={item.href} className="inline-flex items-center justify-center border border-[#8b7354] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5">
+                    {item.cta}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="border-b border-[#6b5841]/45 bg-[#171310] px-6 py-12 sm:px-10">
+          <div className="grid gap-5 lg:grid-cols-3">
+            {audienceCards.map((item) => (
+              <div key={item.title} className="rounded-[1.75rem] border border-[#5f503d]/45 bg-[#1b1612] p-6 sm:p-7">
+                <p className="text-xs uppercase tracking-[0.22em] text-[#c5a57c]">Valterra</p>
+                <h2 className="mt-3 font-serif text-3xl text-[#f4e7d7]">{item.title}</h2>
+                <p className="mt-4 max-w-xl text-sm leading-7 text-[#dccdb8]/82">{item.copy}</p>
+                <div className="mt-6">
+                  <a href={item.href} className="inline-flex items-center justify-center border border-[#8b7354] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5">
+                    {item.cta}
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="border-b border-[#6b5841]/45 bg-[#19130f] px-6 py-10 sm:px-10">
+          <div className="grid gap-6 rounded-[2rem] border border-[#6f5a40]/55 bg-[linear-gradient(135deg,#261c14_0%,#171310_58%,#3a281a_100%)] p-6 sm:p-8 lg:grid-cols-[1.15fr_0.85fr]">
+            <div>
+              <p className="text-xs uppercase tracking-[0.24em] text-[#c5a57c]">Portal Brokers</p>
+              <h2 className="mt-3 font-serif text-4xl text-[#f4e7d7]">Acceso directo al CRM comercial de Valterra.</h2>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-[#dccdb8]/82">
+                Un punto de entrada claro para brokers con acceso a leads, pipeline, tareas, agenda y seguimiento comercial. Ya era hora de que no pareciera escondido en el clóset.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/brokers"
+                  className="inline-flex min-h-12 items-center justify-center bg-[#d3b184] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#1d1712] transition hover:bg-[#e0bf95]"
+                >
+                  Entrar al portal brokers
+                </Link>
+                <Link
+                  href="/crm"
+                  className="inline-flex min-h-12 items-center justify-center border border-[#8b7354] px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5"
+                >
+                  Ir al CRM
+                </Link>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-[1.5rem] border border-[#5f503d]/50 bg-black/10 p-5">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#c5a57c]">Leads</p>
+                <p className="mt-2 text-sm leading-6 text-[#eadbc7]/84">Consulta y atiende oportunidades nuevas sin perder seguimiento.</p>
+              </div>
+              <div className="rounded-[1.5rem] border border-[#5f503d]/50 bg-black/10 p-5">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#c5a57c]">Pipeline</p>
+                <p className="mt-2 text-sm leading-6 text-[#eadbc7]/84">Visualiza el avance comercial y prioriza cierres reales.</p>
+              </div>
+              <div className="rounded-[1.5rem] border border-[#5f503d]/50 bg-black/10 p-5">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#c5a57c]">Agenda</p>
+                <p className="mt-2 text-sm leading-6 text-[#eadbc7]/84">Ordena tareas, citas y seguimiento desde un solo lugar.</p>
+              </div>
+              <div className="rounded-[1.5rem] border border-[#5f503d]/50 bg-black/10 p-5">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#c5a57c]">Acceso</p>
+                <p className="mt-2 text-sm leading-6 text-[#eadbc7]/84">Si ya tienes sesión, el portal te manda directo al CRM.</p>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="border-b border-[#6b5841]/45 bg-[#171310] px-6 py-8 sm:px-10">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {benefits.map(({ title, icon: Icon }) => (
-              <div key={title} className="flex flex-col items-center justify-center border border-[#5f503d]/45 px-4 py-6 text-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#8b7354] text-[#d3b184]">
+            {benefits.map(({ title, description, icon: Icon }) => (
+              <div key={title} className="flex flex-col border border-[#5f503d]/45 px-4 py-6 text-center">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#8b7354] text-[#d3b184]">
                   <Icon className="h-6 w-6" />
                 </div>
                 <p className="mt-4 text-sm uppercase tracking-[0.16em] text-[#e6d8c3]">{title}</p>
+                <p className="mt-3 text-sm leading-6 text-[#dccdb8]/78">{description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="oportunidades" className="border-b border-[#6b5841]/45 bg-[#171310] px-6 py-12 sm:px-10">
+          <div className="flex flex-col gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
+            <div>
+              <p className="text-xs uppercase tracking-[0.24em] text-[#c5a57c]">Inventario destacado</p>
+              <h2 className="mt-3 font-serif text-4xl text-[#f4e7d7]">Oportunidades seleccionadas</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-[#dccdb8]/82">
+                Una muestra del inventario publicado con foco en ubicación, perfil de activo y potencial comercial.
+              </p>
+            </div>
+            <div>
+              <Link href="/propiedades" className="inline-flex items-center justify-center border border-[#8b7354] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5">
+                Ver catálogo completo
+              </Link>
+            </div>
+          </div>
+          <PremiumPropertiesCarousel properties={publishedProperties} />
+        </section>
+
+        <section id="proceso" className="border-b border-[#6b5841]/45 bg-[#171310] px-6 py-10 sm:px-10">
+          <div className="max-w-3xl">
+            <p className="text-xs uppercase tracking-[0.24em] text-[#c5a57c]">Cómo trabajamos</p>
+            <h2 className="mt-3 font-serif text-4xl text-[#f4e7d7]">Un proceso claro para decisiones inmobiliarias mejor informadas</h2>
+            <p className="mt-4 text-sm leading-7 text-[#dccdb8]/82">
+              Menos ruido, más criterio. Cada etapa está pensada para ordenar la decisión y mantener el seguimiento comercial bajo control.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-4 lg:grid-cols-4">
+            {processSteps.map((step, index) => (
+              <div key={step.title} className="rounded-[1.5rem] border border-[#5f503d]/45 bg-[#1b1612] p-6">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#c5a57c]">{String(index + 1).padStart(2, "0")}</p>
+                <h3 className="mt-3 font-serif text-2xl text-[#f4e7d7]">{step.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[#dccdb8]/82">{step.copy}</p>
               </div>
             ))}
           </div>
         </section>
 
         <section id="mercados" className="border-b border-[#6b5841]/45 bg-[#171310] px-6 py-12 sm:px-10">
-          <h2 className="text-center font-serif text-4xl text-[#f4e7d7]">Propiedades Premium</h2>
-          <div className="mt-8 grid gap-6 lg:grid-cols-3">
-            {publishedProperties.length > 0 ? (
-              publishedProperties.map((property) => (
-                <article key={property.id} className="border border-[#5f503d]/45 bg-[#1d1814] p-3">
-                  <div
-                    className="h-64 bg-cover bg-center"
-                    style={{
-                      backgroundImage: `url('${property.imageUrl || "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=900&q=80"}')`,
-                    }}
-                  />
-                  <div className="px-3 pb-4 pt-5 text-center">
-                    <h3 className="font-serif text-3xl text-[#f4e7d7]">{property.title}</h3>
-                    <p className="mt-1 text-xs uppercase tracking-[0.25em] text-[#b89b72]">{property.zone} · {property.market === "RIVIERA_MAYA" ? "Riviera Maya" : "CDMX"}</p>
-                    <p className="mt-4 text-lg text-[#f4e7d7]">{formatCurrency(property.price, property.currency)}</p>
-                    <p className="mx-auto mt-4 max-w-xs text-sm leading-6 text-[#dccdb8]/80">{property.summary || property.description || "Propiedad selecta para clientes que buscan ubicación, criterio y presencia."}</p>
-                    <Link href={`/propiedades/${property.id}`} className="mt-6 inline-flex items-center justify-center gap-2 bg-[#d3b184] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#1d1712] transition hover:bg-[#e0bf95]">
-                      Ver propiedad
-                      <ArrowUpRight className="h-4 w-4" />
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="flex flex-col justify-center">
+              <p className="text-sm uppercase tracking-[0.2em] text-[#c5a57c]">Mercados</p>
+              <h2 className="mt-3 font-serif text-4xl text-[#f4e7d7]">Tres mercados estratégicos. Un mismo criterio de selección.</h2>
+              <p className="mt-5 max-w-md text-sm leading-7 text-[#e4d6c4]/82">
+                Operamos en CDMX, Estado de Mexico y Riviera Maya para acompañar decisiones de compra, inversión o comercialización con mejor contexto de mercado y oportunidades más alineadas al objetivo del cliente.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {marketCards.map((item) => (
+                <div key={item.title} className="rounded-[1.5rem] border border-[#5f503d]/45 bg-[#1b1612] p-6">
+                  <h3 className="font-serif text-3xl text-[#f4e7d7]">{item.title}</h3>
+                  <p className="mt-4 text-sm leading-7 text-[#dccdb8]/82">{item.copy}</p>
+                  <div className="mt-6">
+                    <Link href={item.href} className="inline-flex items-center justify-center border border-[#8b7354] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5">
+                      {item.cta}
                     </Link>
                   </div>
-                </article>
-              ))
-            ) : (
-              <div className="lg:col-span-3 rounded-[1.5rem] border border-dashed border-[#5f503d] px-6 py-12 text-center text-[#dccdb8]/80">
-                Aún no hay propiedades publicadas desde el CRM. En cuanto marques una como pública, aparece aquí. Magia, pero útil.
-              </div>
-            )}
-          </div>
-        </section>
-
-        <section id="nosotros" className="grid gap-8 border-b border-[#6b5841]/45 bg-[#171310] px-6 py-12 sm:px-10 lg:grid-cols-[1fr_1.05fr]">
-          <div className="flex flex-col justify-center">
-            <p className="text-sm uppercase tracking-[0.2em] text-[#c5a57c]">Quiénes somos</p>
-            <h2 className="mt-3 font-serif text-4xl text-[#f4e7d7]">Una firma inmobiliaria con claridad, elegancia y criterio patrimonial.</h2>
-            <p className="mt-5 max-w-md text-sm leading-7 text-[#e4d6c4]/82">
-              Combinamos atención personalizada, lectura estratégica de mercado y una selección curada de activos para construir decisiones sólidas en mercados de alto valor.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-4">
-              <a href="#contacto" className="inline-flex items-center justify-center bg-[#d3b184] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#1d1712] transition hover:bg-[#e0bf95]">
-                Sobre nosotros
-              </a>
-              <Link href="/login" className="inline-flex items-center justify-center border border-[#8b7354] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#f3e7d6] transition hover:bg-white/5">
-                Entrar al CRM
-              </Link>
+                </div>
+              ))}
             </div>
           </div>
-
-          <div className="min-h-[320px] bg-[url('https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center shadow-[0_12px_28px_rgba(0,0,0,0.25)]" />
         </section>
 
-        <section id="contacto" className="border-t border-[#6b5841]/45 bg-[#120f0d] px-6 py-10 sm:px-10">
+        <section className="border-b border-[#6b5841]/45 bg-[#171310] px-6 py-10 sm:px-10">
+          <div className="flex flex-col gap-4 text-center sm:text-left">
+            <p className="text-xs uppercase tracking-[0.24em] text-[#c5a57c]">Confianza</p>
+            <h2 className="font-serif text-4xl text-[#f4e7d7]">Señales claras de una operación mejor organizada</h2>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {trustSignals.map((signal) => (
+              <div key={signal} className="border border-[#5f503d]/45 bg-[#1b1612] px-5 py-6 text-center text-sm uppercase tracking-[0.16em] text-[#e6d8c3]">
+                {signal}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="contacto" className="border-t border-[#6b5841]/45 bg-[#120f0d] px-6 pb-28 pt-10 sm:px-10 sm:pb-10">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             <div>
               <p className="text-sm uppercase tracking-[0.2em] text-[#c5a57c]">Contacto</p>
-              <h2 className="mt-3 max-w-2xl font-serif text-3xl text-[#f4e7d7]">Déjanos tus datos y armamos una base seria de clientes, no una colección de post-its digitales.</h2>
+              <h2 className="mt-3 max-w-2xl font-serif text-3xl text-[#f4e7d7]">Conversemos sobre tu siguiente movimiento inmobiliario</h2>
               <p className="mt-4 max-w-xl text-sm leading-7 text-[#e4d6c4]/82">
-                Cuéntanos qué buscas, en qué mercado te interesa invertir o comprar, y cómo prefieres que te contactemos.
+                Ya sea que quieras invertir, comprar o comercializar una propiedad, podemos ayudarte a ordenar el proceso y avanzar con más claridad.
               </p>
               <div className="mt-6 flex flex-col gap-3 text-sm text-[#eadfce]">
                 <a href="mailto:hola@valterra.mx" className="transition hover:text-white">hola@valterra.mx</a>
-                <a href="https://wa.me/529984635201" className="transition hover:text-white">WhatsApp directo</a>
+                <a href="https://wa.me/529984635201" className="transition hover:text-white">Hablar por WhatsApp</a>
               </div>
             </div>
             <ContactForm />

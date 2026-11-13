@@ -28,6 +28,9 @@ Icon*
 # local review artifacts
 /yaax-landing-*.png
 
+# unused source renders; referenced production assets are already tracked
+/public/uploads/properties/yaax/*
+
 # debug
 npm-debug.log*
 yarn-debug.log*
